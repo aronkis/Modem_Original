@@ -1,0 +1,59 @@
+make_sro_trees.sh regen-diff proof                         [sim] Stage 4, 2026-09-10
+==========================================================================
+Method: regenerate every gate tree into a scratch root and diff it against the tree
+the banked gate legs actually ran on.  Nothing on disk was deleted first.
+
+  modem/rtl_sim/make_sro_trees.sh --out /mnt/onetb/scratch/qpsk-build-trees/sro_regen
+  src = modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback (153 .v files)
+
+TREE                   .v_regen .v_ondisk  DIFFER_.v  RESIDUAL (non-.v or comment-only)
+----                   -------- ---------  ---------  ---------------------------------
+s1_rtl_rxfix_W1             153      153          0  14 non-.v HDL-Coder artefacts only in the regenerated tree
+s1_rtl_rxfix_R4B            153      153          0  none
+s1_rtl_rxfix_R4D            153      153          0  none
+s1_rtl_rxfix_R4DR1          153      153          0  none
+s1_rtl_bs                   153      153          0  none
+s1_rtl_bs_base              153      153          0  none
+s1_rtl_bs_gen               153      153          0  none
+s1_rtl_pad                  153      153          0  none
+
+VERDICT: 0 differing .v files in every tree.
+
+Residual 1 -- ByteRxFifo.v, OBSERVED AT THE PROOF RUN (07:53) AND SINCE SELF-HEALED.
+  At the time of the regen proof, s1_rtl_bs / s1_rtl_bs_base / s1_rtl_pad differed from the
+  regenerated trees on line 2 of ByteRxFifo.v, a COMMENT only:
+
+    < // (modem/byte_rxfifo_overlay.m, 64-deep register FIFO). v5 DEBUG ...
+    > // (jupiter_240k5_byte/byte_rxfifo_overlay.m, 64-deep register FIFO). v5 DEBUG ...
+
+  i.e. the on-disk trees predated sub-project 1's directory rename and the REGENERATED tree
+  was the more correct one.  It was deliberately not normalised, on the reasoning that
+  build_sro_bs.sh rebuilds those three trees itself on every gate run and the difference
+  would self-heal.  That prediction is now confirmed: the role A BS gate rebuilt them at
+  09:51, and re-diffing today reports all three IDENTICAL to the regenerated trees, line 2
+  included.  The table above therefore shows 0 residual for them.  Recorded rather than
+  quietly dropped, because the table alone would no longer show that anything was ever
+  different.
+
+Residual 2 -- s1_rtl_rxfix_W1: the regenerated tree additionally carries 14 non-.v
+  HDL-Coder artefacts (*.m, gm_*.slx, html/, _htmllib/, hcv/, TxRxComposite_*); the
+  historical tree was made by a filtered copy.  Verilator reads only .v, so this cannot
+  affect any gate.
+
+Injector provenance for the regenerated trees:
+  MAKE_SRO_SRC /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback (153 .v files)
+  RXFIX_INJECT variant=W1 sim-tree loose=8 missing=[] zips=0 zips_verified=0
+  MAKE_SRO_TREE s1_rtl_rxfix_W1 <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + W1
+  RXFIX_INJECT variant=R4B sim-tree loose=8 missing=[] zips=0 zips_verified=0 skipped=['QPSK_Rx.v', 'Receiver.v', 'TxRxComposite.v'] r4b_witness=off
+  MAKE_SRO_TREE s1_rtl_rxfix_R4B <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + R4B
+  RXFIX_INJECT variant=R4D sim-tree loose=8 missing=[] zips=0 zips_verified=0 skipped=['QPSK_Rx.v', 'Receiver.v', 'TxRxComposite.v'] r4d_witness=off
+  MAKE_SRO_TREE s1_rtl_rxfix_R4D <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + R4D
+  RXFIX_INJECT variant=R4D sim-tree loose=8 missing=[] zips=0 zips_verified=0 skipped=['QPSK_Rx.v', 'Receiver.v', 'TxRxComposite.v'] r4d_witness=off
+  RXFIX_INJECT variant=R1 sim-tree loose=1 missing=[] zips=0 zips_verified=0
+  MAKE_SRO_TREE s1_rtl_rxfix_R4DR1 <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + R4D R1
+  MAKE_SRO_TREE s1_rtl_bs_base <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + BRAM drop-in(DEPTH=4096)
+  RXFIX_INJECT variant=BS sim-tree loose=3 missing=[] zips=0 zips_verified=0 BS_FREEZE=tied0
+  MAKE_SRO_TREE s1_rtl_bs <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback + BRAM drop-in(DEPTH=4096) + BS
+  MAKE_SRO_TREE s1_rtl_bs_gen <- /mnt/onetb/scratch/qpsk-jupiter-modem/modem/s1_rtl/hdlsrc/commhdlQPSKTxRxLoopback verbatim
+  RXFIX_PAD patched
+  MAKE_SRO_TREE s1_rtl_pad <- s1_rtl_bs + pad_patch.py

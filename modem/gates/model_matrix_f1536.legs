@@ -1,0 +1,70 @@
+# model_matrix_f1536.legs -- GATE 1 for the f1536 / sps-4 rung (r2/r3, the shipped sp3 lineage).
+#
+# The same 63 rows as model_matrix.legs with the f1536 sample counts (428 x 49332 = 21114096; W1 165 / 210
+# frames = 8139780 / 10359720), the f1536 witness constants and reference_loss_f1536.toml -- the table the
+# shipped sp3prod image was gated with on 2026-09-16 (git 6128b9db), re-homed here when the harness grew its
+# rung knob (geometry_gen.py / run_gates.sh --rung, 2026-10-01). Run with --rung r3 (bank sro_sim).
+#
+
+
+m0_n_p000|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21114096 8400 m0_n_p000 2 0 +r4bwin=m0_n_p000_skipwin.txt|test -s m0_n_p000_res.txt && test -s m0_n_p000_seq.txt
+m0_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p000|grep -q 'LOSS=' m0_n_p000_t7.log
+m0_n_p2p5|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p2p5.iq 21114096 8400 m0_n_p2p5 2 0 +r4bwin=m0_n_p2p5_skipwin.txt|test -s m0_n_p2p5_res.txt
+m0_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p2p5|grep -q 'LOSS=' m0_n_p2p5_t7.log
+m0_n_m2p5|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_m2p5.iq 21114096 8400 m0_n_m2p5 2 0 +r4bwin=m0_n_m2p5_skipwin.txt|test -s m0_n_m2p5_res.txt
+m0_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_m2p5|grep -q 'LOSS=' m0_n_m2p5_t7.log
+m0_n_p10|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p10.iq 21114096 8400 m0_n_p10 2 0 +r4bwin=m0_n_p10_skipwin.txt|test -s m0_n_p10_res.txt
+m0_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p10|grep -q 'LOSS=' m0_n_p10_t7.log
+m0_n_m10|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_m10.iq 21114096 8400 m0_n_m10 2 0 +r4bwin=m0_n_m10_skipwin.txt|test -s m0_n_m10_res.txt
+m0_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_m10|grep -q 'LOSS=' m0_n_m10_t7.log
+
+G1_ident|python3 $SCORE/t12_ident.py m0_n_p000 $BANK/b_p000|grep -q '^T12_IDENT PASS content_equal=True' G1_ident.log && [ "$(sed -n 's/.*common seq: \([0-9]*\).*/\1/p' G1_ident.log | head -1)" -ge 420 ]
+G4_prearm|python3 $SCORE/t12b_prearm.py m0_n_p000 $BANK/b_p000|grep -q 'PRE-ARM IDENTITY HOLDS' G4_prearm.log
+G2_skips|python3 $SCORE/t12b_window.py m0_n_p000|s=$(sed -n 's/.*r3_skips=\([0-9]*\).*/\1/p' m0_n_p000_res.txt) && [ "$s" -ge 4 ] && [ "$s" -le 14 ] && grep -q '^  WINDOW OK: every one of ' G2_skips.log && lk=$(sed -n 's/.*(LOCK) at air frame \([0-9]*\).*/\1/p' G2_skips.log) && la=$(sed -n 's/.*air frames  : first [0-9]*, last \([0-9]*\),.*/\1/p' G2_skips.log) && fa=$(sed -n 's/.*air frames  : first \([0-9]*\),.*/\1/p' G2_skips.log) && [ "$fa" -ge "$lk" ] && [ "$((la - lk))" -le 11 ]
+repro_p000|-|: depends m0_n_p000 && cmp -s m0_n_p000_deliv.txt $BANK/r4b_p000_deliv.txt && cmp -s m0_n_p000_frames.txt $BANK/r4b_p000_frames.txt
+repro_p000_content|-|: depends m0_n_p000 && cmp -s <(cut -d, -f2- m0_n_p000_deliv.txt) <(cut -d, -f2- $BANK/r4b_p000_deliv.txt) && [ "$(wc -l < m0_n_p000_deliv.txt)" = "$(wc -l < $BANK/r4b_p000_deliv.txt)" ]
+G3_ring|-|: depends m0_n_p000 && lf=$(awk -F, '!/^#/{f=int($2/49332)} END{print f+0}' m0_n_p000_skipwin.txt) && awk -F, -v L="$lf" '$1>L {n++; if($25!=0) bad++; if($23<8||$23>12||$24<8||$24>12) bad++} END{exit !(n>100 && bad==0)}' m0_n_p000_frames.txt
+
+w1_p000|env W1_LAG=3 $RTL/obj_byte_w1_w1_model_0/Vwrap_byte_w1_model rx $SRO/s_p000.iq 8139780 8400 w1_p000 2 0|test -s w1_p000_deliv.txt && test -s w1_p000_w1.txt
+base_p000|$RTL/obj_byte_w1_base_model_0/Vwrap_byte_w1_model rx $SRO/s_p000.iq 8139780 8400 base_p000 2 0 base|test -s base_p000_deliv.txt
+w1_m10|env W1_LAG=3 $RTL/obj_byte_w1_w1_model_0/Vwrap_byte_w1_model rx $SRO/s_m10.iq 10359720 8400 w1_m10 2 0|test -s w1_m10_deliv.txt && test -s w1_m10_w1.txt
+base_m10|$RTL/obj_byte_w1_base_model_0/Vwrap_byte_w1_model rx $SRO/s_m10.iq 10359720 8400 base_m10 2 0 base|test -s base_m10_deliv.txt
+gateA_p000|-|: depends w1_p000 base_p000 && cmp -s w1_p000_deliv.txt base_p000_deliv.txt && [ "$(md5sum w1_p000_deliv.txt | cut -c1-32)" = 555fbb25362f14a3d36b60f6797152af ] && [ "$(wc -l < w1_p000_deliv.txt)" = 164 ]
+gateA_m10|-|: depends w1_m10 base_m10 && cmp -s w1_m10_deliv.txt base_m10_deliv.txt && [ "$(md5sum w1_m10_deliv.txt | cut -c1-32)" = 91680b59e9cebdae3b285953fea203ef ] && [ "$(wc -l < w1_m10_deliv.txt)" = 209 ]
+edge_m10|-|: depends w1_m10 && tail -1 w1_m10_w1.txt | awk -F, '{ exit !($9 == 21 && $8 == 21) }'
+
+m_bs_p000|$RTL/obj_byte_sro_bs_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21114096 8400 m_bs_p000 2 0 +bsdump=m_bs_p000_census.txt|test -s m_bs_p000_census.txt
+m_pad_p000|$RTL/obj_byte_sro_pad_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21114096 8400 m_pad_p000 2 0 +bsdump=m_pad_p000_census.txt|test -s m_pad_p000_deliv.txt
+m_pad_k1536|$RTL/obj_byte_sro_pad_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21114096 8400 m_pad_k1536 2 0 +bsskip=1536 +bsskip_at=20000 +bsdump=m_pad_k1536_census.txt|test -s m_pad_k1536_census.txt
+census_clean|-|: depends m_bs_p000 && tail -1 m_bs_p000_census.txt | awk -F, '{ exit !($9 == 0 && $10 == 0 && $15 == 0 && $22 >= 0 && $22 <= 4 && $2 == $3 && $2 == $11 && $5 == $12 && $13 == $14 && $5 > 400) }'
+census_grid|-|: depends m_bs_p000 && STEP=$(awk -F, '!/^#/{if(p!=""){print $1-p; exit} p=$1}' $BANK/bs1_p000_census.txt) && HI=$(tail -1 $BANK/bs1_p000_census.txt | cut -d, -f1) && want=$(awk -F, -v S="$STEP" -v H="$HI" '!/^#/ && $1%S==0 && $1<=H {n++} END{print n+0}' m_bs_p000_census.txt) && [ "$want" -ge 3 ] && awk -F, -v W="$want" 'NR==FNR{a[$1]=$0;next} !/^#/ && ($1 in a){n++; if(a[$1]!=$0) bad++} END{exit !(n == W && bad == 0)}' $BANK/bs1_p000_census.txt m_bs_p000_census.txt
+words191_k1536|-|: depends m_pad_k1536 && tail -1 m_pad_k1536_census.txt | awk -F, '{ exit !($2 == 79760 && $5 == 418 && $12 == 418 && $9 == 0 && $10 == 0 && $16 == 417 && $22 == 312 && $23 == 255) }'
+control_k1536|-|: depends m_pad_k1536 && grep -q 't7_ok=104 ' m_pad_k1536_res.txt && grep -q 't7_nomagic=319 ' m_pad_k1536_res.txt && grep -q 't7_ok=104 ' $BANK/bs1_k1536_res.txt && grep -q 't7_nomagic=1 ' $BANK/bs1_k1536_res.txt
+nrxw_k1536|-|: depends m_pad_k1536 && grep -q 'nrxw=80960$' m_pad_k1536_res.txt && grep -q 'nrxw=73328$' $BANK/bs1_k1536_res.txt
+merge_control|-|tail -1 $BANK/bs1_k1536_census.txt | awk -F, '{ exit !($5 == 106 && $10 == 52520) }'
+I5_sub|-|: depends m_bs_p000 m0_n_p000 && cmp -s m_bs_p000_frames.txt m0_n_p000_frames.txt && cmp -s m_bs_p000_deliv.txt m0_n_p000_deliv.txt && cmp -s m_bs_p000_seq.txt m0_n_p000_seq.txt
+bs_vs_pad|-|: depends m_bs_p000 m_pad_p000 && cmp -s m_bs_p000_frames.txt m_pad_p000_frames.txt && cmp -s m_bs_p000_deliv.txt m_pad_p000_deliv.txt && cmp -s m_bs_p000_seq.txt m_pad_p000_seq.txt && cmp -s m_bs_p000_census.txt m_pad_p000_census.txt
+
+
+m20_n_p000|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21114096 8400 m20_n_p000 2 0 +r4dwin=m20_n_p000_skipwin.txt|test -s m20_n_p000_res.txt && test -s m20_n_p000_seq.txt
+m20_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p000|grep -q 'LOSS=' m20_n_p000_t7.log
+m20_n_p2p5|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p2p5.iq 21114096 8400 m20_n_p2p5 2 0 +r4dwin=m20_n_p2p5_skipwin.txt|test -s m20_n_p2p5_res.txt
+m20_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p2p5|grep -q 'LOSS=' m20_n_p2p5_t7.log
+m20_n_m2p5|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_m2p5.iq 21114096 8400 m20_n_m2p5 2 0 +r4dwin=m20_n_m2p5_skipwin.txt|test -s m20_n_m2p5_res.txt
+m20_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_m2p5|grep -q 'LOSS=' m20_n_m2p5_t7.log
+m20_n_p10|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p10.iq 21114096 8400 m20_n_p10 2 0 +r4dwin=m20_n_p10_skipwin.txt|test -s m20_n_p10_res.txt && test -s m20_n_p10_frames.txt
+m20_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p10|grep -q 'LOSS=' m20_n_p10_t7.log
+m20_n_m10|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_m10.iq 21114096 8400 m20_n_m10 2 0 +r4dwin=m20_n_m10_skipwin.txt|test -s m20_n_m10_res.txt
+m20_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_m10|grep -q 'LOSS=' m20_n_m10_t7.log
+
+S1_p000_D1|-|: depends m20_n_p000 && grep -q 'LOSS=0.00%' m20_n_p000_t7.log
+S1_p000_D2|-|: depends m20_n_p000 && k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' m20_n_p000_res.txt) && [ "$k" = 423 ] && grep -q 'r3_extras=0$' m20_n_p000_res.txt && grep -q '^r3_skips=8 ' m20_n_p000_res.txt
+S2_p10_D1|-|: depends m20_n_p10 && grep -qE 'LOSS=(0\.[0-9][0-9]|1\.00)%' m20_n_p10_t7.log
+S2_p10_D2|-|: depends m20_n_p10 && k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && [ "$k" -ge 420 ]
+S3_p10_pof|-|: depends m20_n_p10 && grep -q 'rh_push_on_full=0 ' m20_n_p10_res.txt
+S4_p10_pdocc|-|: depends m20_n_p10 && grep -q 'pdOcc_end=12333' m20_n_p10_res.txt && awk -F, 'NR>25 && ($29!=12333 || $30!=12333){n++} END{exit n>0}' m20_n_p10_frames.txt
+S5_p10_ring|-|: depends m20_n_p10 && e=$(sed -n 's/.*r3_extras=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && o=$(sed -n 's/.*occTrue_end=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && [ "$e" -ge 30 ] && [ "$e" -le 45 ] && [ "$o" -ge 21 ] && [ "$o" -le 25 ]
+
+sign_identity_p000|-|: depends m20_n_p000 m0_n_p000 && cmp -s m20_n_p000_deliv.txt m0_n_p000_deliv.txt
+
+score|python3 $HERE/score_matrix.py --ref $HERE/reference_loss_f1536.toml --run . --map R4B/n_p000=m0_n_p000 --map R4B/n_p2p5=m0_n_p2p5 --map R4B/n_m2p5=m0_n_m2p5 --map R4B/n_p10=m0_n_p10 --map R4B/n_m10=m0_n_m10 --map R4DR1/n_p000=m20_n_p000 --map R4DR1/n_p2p5=m20_n_p2p5 --map R4DR1/n_m2p5=m20_n_m2p5 --map R4DR1/n_p10=m20_n_p10 --map R4DR1/n_m10=m20_n_m10|grep -q '^MATRIX_EXIT 0' score.log

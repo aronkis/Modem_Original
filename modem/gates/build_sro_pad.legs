@@ -1,0 +1,58 @@
+# build_sro_pad.legs -- RXFIX_PAD (F4: the ByteSerializer pads a truncated frame to
+# 191 words) sim gate.
+# Ledger: docs/evidence/comb/FWD_CRC_REGRESSION_0907.md §47.6 (the patch and its
+#         iverilog unit test tb_pad.v), §47.7 (what was pre-registered) and §47.8
+#         (the sim gate itself: "RXFIX_PAD sim gate: PASS (legs done 15:29)").
+# Stimulus: n_p000.iq, nsamp 21,114,096, rstcs_end 8400, cadence 2, vphase 0 -- the
+#           same two legs the ledger ran, against the banked Task 46 legs bs1_p000
+#           and bs1_k1536.
+#
+# THE TWO LEGS ARE A PAIR AND MUST BE READ AS ONE.  pad_p000 is the INERTNESS row: on
+# clean frames the padded serializer must deliver a byte-identical stream (§47.8:
+# "the p000 delivered stream is byte-identical to the banked leg -- PAD is inert on
+# clean frames").  pad_k1536 is the TRUNCATION CONTROL: with every frame truncated by
+# a 1536-bit skip poke, the unpatched serializer MERGES frames (106 frames seen at the
+# pins for 421 starts, 52,520 orphan words) while the padded one delivers 418 frames
+# of exactly 191 words with zero orphans, each padded frame arriving as one no-magic
+# frame (t7_nomagic 319) and the census still counting every truncation.  Without the
+# control the identity row alone would also pass on a serializer that did nothing.
+#
+# NOT COVERED HERE, with the banked reference:
+#   §47.6  tb_pad.v iverilog unit test (TB_PAD_PASS, 6 frames / 1146 words /
+#          120 fillers / 0 gap errors) -- a separate iverilog harness
+#   §47.8  the census order statistics on pad_k1536 (bs_trunc 312, q24 255 saturated)
+#          and the "no stall leg re-run" note (PAD is upstream of the FIFO)
+#
+# format: name|command|criterion
+#
+# s1_rtl_pad = s1_rtl_bs + pad_patch.py.  build_sro_bs.sh rebuilds s1_rtl_bs on every
+# run, so the pad tree is regenerated from it here rather than assumed fresh.
+tree|$RTL/make_sro_trees.sh PAD|grep -q '^MAKE_SRO_TREE s1_rtl_pad ' tree.log
+build|$RTL/build_sro_pad.sh|grep -q '^BUILD_SRO_PAD_OK obj_byte_sro_pad ' build.log
+pad_p000|$RTL/obj_byte_sro_pad/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 pad_p000 2 0 +bsdump=pad_p000_census.txt|test -s pad_p000_deliv.txt
+pad_k1536|$RTL/obj_byte_sro_pad/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 pad_k1536 2 0 +bsskip=3056 +bsskip_at=20000 +bsdump=pad_k1536_census.txt|test -s pad_k1536_deliv.txt
+# §47.8 identity row: pad_p000 byte-identical to the banked bs1_p000 on _deliv.txt
+# (md5 8f5f2f4a...), _frames.txt (b2337afe...) and _seq.txt (01cc2c53...).  _res.txt
+# (2b3ba0e9...) is compared from line 2: line 1 echoes the iq argument as given, and
+# the banked leg was launched with a relative path.
+ident_p000|-|cmp -s pad_p000_deliv.txt $BANK/bs1_p000_deliv.txt && cmp -s pad_p000_frames.txt $BANK/bs1_p000_frames.txt && cmp -s pad_p000_seq.txt $BANK/bs1_p000_seq.txt
+ident_p000_res|-|cmp -s <(tail -n +2 pad_p000_res.txt) <(tail -n +2 $BANK/bs1_p000_res.txt)
+# §47.8 reproduction of the banked pad legs themselves.
+repro_pad|-|cmp -s pad_p000_deliv.txt $BANK/pad_p000_deliv.txt && cmp -s pad_k1536_deliv.txt $BANK/pad_k1536_deliv.txt && cmp -s pad_k1536_frames.txt $BANK/pad_k1536_frames.txt
+# §47.8 truncation control: good frames unchanged at 104 (bs1_k1536 also 104) while
+# every padded frame arrives as one no-magic frame -- t7_nomagic 1 -> 319.
+control_k1536|-|grep -q 't7_ok=104 ' pad_k1536_res.txt && grep -q 't7_nomagic=319 ' pad_k1536_res.txt && grep -q 't7_ok=104 ' $BANK/bs1_k1536_res.txt && grep -q 't7_nomagic=1 ' $BANK/bs1_k1536_res.txt
+# §47.8 the 191-word pin, read off the final census record (columns, from the file's
+# own header: 2=h_push 5=ck_frames 9=ck_short 10=ck_orphan 12=bs_starts 16=bs_lasts
+# 22=bs_trunc 23=bs_q24).  Padded: 418 frames, 418 starts, ZERO orphans and zero
+# shorts, the census still counting 312 truncations with q24 saturated at 255.
+# NB the ledger writes "79,760 = 418 x 191"; that arithmetic is loose (418 x 191 =
+# 79,838).  The final record is an off-grid dump 113 words into frame 418 -- 417
+# COMPLETED frames (bs_lasts = 417) x 191 = 79,647, + 113 = 79,760 -- which is the
+# same footnote §47.8 attaches to the row ("the pad legs' final census row is the
+# end-of-run dump at clk 41.70 M").  So the pin scored here is the banked word count
+# and the completed-frame multiple, not the loose product.
+words191_k1536|-|tail -1 pad_k1536_census.txt | awk -F, '{ exit !($2 == 79760 && $5 == 418 && $12 == 418 && $9 == 0 && $10 == 0 && $16 == 417 && $22 == 312 && $23 == 255) }'
+merge_control|-|tail -1 $BANK/bs1_k1536_census.txt | awk -F, '{ exit !($5 == 106 && $10 == 52520) }'
+# §47.8 nrxw at the pins: 80,960 padded vs 73,328 unpatched on the same 421 starts.
+nrxw_k1536|-|grep -q 'nrxw=80960$' pad_k1536_res.txt && grep -q 'nrxw=73328$' $BANK/bs1_k1536_res.txt

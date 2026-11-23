@@ -1,0 +1,36 @@
+# build_sro_rxfix4d.legs -- RXFIX_R4D sim gate.
+# Ledger: docs/evidence/comb/RXFIX_R4D_SIM_GATE.md (§1 which legs can even differ
+#         from R4B -- measured, not assumed; §2 gate table J1-J11).
+# Stimulus: n_p000.iq, nsamp 21,114,096, rstcs_end 8400, cadence 2, vphase 0.
+#
+# READ §1 BEFORE READING THIS TABLE.  On five of the seven ledger legs the `occ >= 24`
+# extra-pop predicate is NEVER TRUE after lock, so R4D is structurally identical to
+# R4B there and the identity is a prediction about the RTL text.  n_p000 is one of
+# them (max oMax after lock = 10, frames with oMax >= 24 = 0), which is why J5 is the
+# row this gate keeps: it is cheap, falsifiable, and it is the row that would break
+# first if the R4D text were wrong.
+#
+# LEGS NOT RUN HERE, with the banked number:
+#   J1-J4  r4d_p10  (n_p10.iq)  -- R4D was REFUTED on this leg: 70.28 % loss on D2,
+#          framing dead within three air frames of the first extra, pdPof 1,
+#          pdOcc_end 12332 (RXFIX_S1_SIM_GATE.md §0/§3).  R4D is not a shipped
+#          variant on its own; role B ships R4D+R1, gated by build_sro_rxfix4dr1.
+#   J6     r4d_m40 / s_m10 tiled / n_m10c / s_m2p5_lol vs R4B -- byte-identical, extras 0
+#   J7-J8  r4d_m10 -- 98.11 % on D2, also refuted
+#   J9     skip/extra position histogram (t12b_window.py)
+#   J11    injector kit-shaped W1+R4D application -- modem/fixes/tests, not a leg
+#
+# format: name|command|criterion
+#
+# J10 (wrapper/tree provenance) is asserted inside the build script.
+build|$RTL/build_sro_rxfix4d.sh|grep -q '^BUILD_SRO_RXFIX4D_DONE ' build.log
+r4d_p000|$RTL/obj_byte_sro_rxfix4d/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 r4d_p000 2 0 +r4dwin=r4d_p000_skipwin.txt|test -s r4d_p000_deliv.txt && test -s r4d_p000_seq.txt
+# Reproduction of the banked Task 14 leg, byte for byte.
+repro_p000|-|cmp -s r4d_p000_deliv.txt $BANK/r4d_p000_deliv.txt && cmp -s r4d_p000_frames.txt $BANK/r4d_p000_frames.txt
+# J5: content identity vs b_p000 and r4d_extras = 0 (occupancy never reaches 24).
+J5_ident|python3 $SCORE/t12_ident.py r4d_p000 $BANK/b_p000|grep -q '^T12_IDENT PASS content_equal=True' J5_ident.log
+J5_extras|-|grep -q 'r3_extras=0$' r4d_p000_res.txt && grep -q '^r3_skips=8 ' r4d_p000_res.txt
+# §1: on n_p000 R4D CANNOT differ from R4B -- the delivered stream must be byte-identical
+# to the banked R4B leg on the same stimulus.  This is the row that makes "structurally
+# identical" a measurement instead of an argument.
+S1_vs_r4b|-|cmp -s r4d_p000_deliv.txt $BANK/r4b_p000_deliv.txt

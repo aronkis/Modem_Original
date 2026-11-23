@@ -1,0 +1,229 @@
+# model_matrix.legs -- sp3 task 9, GATE 1: the full equivalence matrix on ONE
+# model tree that carries EVERY overlay (W1, STEER, R1, BS, PAD, TX F3) plus the
+# rxfifo / txcap / ddrcap(TXMARK=1) / ddrcap2 stages of
+# modem/fixes/build_base_tree.sh, at BOTH sro_sign settings.
+#
+# WHY THIS TABLE EXISTS.  Tasks 4-8 each gated their own overlay on a tree that
+# lacked the later ones (task 8's regen8 tree had no BS/PAD; task 7's had no F3),
+# so the COMBINED tree has never been gated.  Every per-task gate reproduced the
+# injected-tree reference EXACTLY, so any deviation scored here is an INTERACTION
+# between overlays, not a fresh transcription error.
+#
+# OBJ DIRS ARE NAMED EXPLICITLY, not via RTL_OBJ_SUFFIX, so the table records
+# which binary produced which number:
+#   FIXCTL=0   obj_byte_sro_rxfix4b_model_0     Vwrap_byte_sro_model  (sroSign=0)
+#   FIXCTL=20  obj_byte_sro_rxfix4dr1_model_20  Vwrap_byte_sro_model  (sroSign=1)
+#   FIXCTL=0   obj_byte_w1_w1_model_0           Vwrap_byte_w1_model
+#   FIXCTL=0   obj_byte_w1_base_model_0         Vwrap_byte_w1_model
+#   FIXCTL=0   obj_byte_sro_bs_model_0          Vwrap_byte_sro_model
+#   FIXCTL=0   obj_byte_sro_pad_model_0         Vwrap_byte_sro_model
+# The model binaries are named Vwrap_byte_sro_model / Vwrap_byte_w1_model, NOT
+# Vwrap_byte_sro / Vwrap_byte_w1 -- copying a row out of build_sro_*.legs verbatim
+# builds nothing and fails the leg.  (make_sro_trees.sh --from-regen emits the
+# *_model.v wrappers; build_sro_*.sh renames the binary with them.)
+#
+# W1_LAG=3 ON EVERY w1_* LEG (sp3 task 4 fix round 1): on a model-generated tree
+# the eight w1 words reach the composite ports THREE enb beats late
+# (TxRxComposite.v delayMatch43..50), where the injector's wrapper tapped
+# u_QPSK_Rx.w1Bus ahead of them.  Unset (0) is the injector-lineage comparison and
+# scores ~8.2 M mismatches here.  The base_* legs run in mode=baseline (SKIP) and
+# take no W1_LAG.  Env has to go through `env`: run_gates.sh runs the command as
+# `timeout 7200 <command>` and timeout EXECs its first argument.
+#
+# PLUSARG SPELLING DIFFERS BY VARIANT, as the two source ledgers do:
+# build_sro_rxfix4b.legs uses +r4bwin=, build_sro_rxfix4dr1.legs uses +r4dwin=.
+# Each row keeps its own.
+#
+# ROWS DELIBERATELY NOT RE-IMPORTED FROM build_sro_bs.legs / build_sro_pad.legs.
+# Task 7 adjudicated these as NOT RUNNABLE on a model tree and they are not
+# re-litigated here:
+#   build, tree, bsw_p000, bsb_p000, I5_wrapper   need the three-binary
+#       base/bs/gen triple and wrap_byte_sro.v; on a model tree the census cannot
+#       be removed without a regen and the wrapper is wrap_byte_bs_model.v.
+#   I1_frames, I4_res, repro_p000, ident_p000, ident_p000_res, repro_pad
+#       compare against $BANK/bs1_* and $BANK/pad_*, produced on s1_rtl_bs =
+#       s1_rtl + drop-in + BS -- a tree with no W1, no STEER, no R1.  This tree
+#       carries all three; task 7 measured _frames differing on 416 of 429 lines.
+# What replaces them are the two SAME-TREE identity rows I5_sub and bs_vs_pad
+# below, which is the form task 7 ran and recorded.
+#
+# EXPECTED NON-PASS ROWS, PRE-DECLARED so that none of them consumes the plan's
+# single diagnosis attempt.  Each names its CLASS, and the class is the point: a row
+# that pins an s1-LINEAGE CONSTANT is not measuring this tree's fix, it is measuring
+# the difference between two lineages.
+#
+#   CLASS "drop-in +1" -- the shipped 4096-deep BRAM ByteRxFifo drop-in (and/or the
+#   PAD arbiter) costs ONE input sample of pipeline latency that $BANK's trees, built
+#   with the generated 64-deep register FIFO, do not have.  Any criterion that compares
+#   a SAMPLE INDEX against the bank moves by exactly that +1 (plus 4 samples per R4B
+#   skip) while the delivered CONTENT is bit-identical.  Measured on the pre-BS/PAD
+#   task 5 and task 6 model trees: sidx == bank exactly; on the task 7 tree, which adds
+#   BS/PAD/drop-in but NO F3: sidx == bank + 1.  So it is not an overlay interaction.
+#     repro_p000    strict `cmp` of _deliv/_frames against $BANK/r4b_p000 -- FAILS;
+#                   cols 2.. of _deliv are IDENTICAL on all 424 frames and the sidx
+#                   delta is {0:2, 1:414, 5:8}.
+#     G4_prearm     pre-arm identity "INCLUDING sidx" -- content 6/6, sidx 0/6.
+#     gateA_p000    the banked W1 md5, taken over a file whose first column is sidx --
+#                   `cmp w1 base` and the 164-line count both pass.
+#
+#   CLASS "pre-fix constant" -- the banked value encodes the stream a tree WITHOUT the
+#   RX fixes produced, so reproducing it would mean the fixes did not work.
+#     gateA_m10     banked md5 of a -10 ppm stream with 48 corrupted frames (44 distinct
+#                   payload hashes on a TILED stimulus); this tree delivers 208/209 with
+#                   the tiled payload, 2 distinct hashes.
+#     edge_m10      pins poe == 21, i.e. 21 ring underruns; this tree has poe == 0.
+#
+# The TX gate's G6 (FAIL on BOTH the injected and the model tree, matching the banked
+# 2026-09-03 summary) and its RX-capture rows are NOT in this table; they are run and
+# recorded separately, see docs/evidence/sp3/GATE1_EQUIVALENCE.md.
+#
+# sp4 RUNG (f3072, 2 sps; docs/evidence/sp4/GATE1.md, 2026-09-22). The bank and the
+# reference table are cut from Gate 1 run 4 on the regen_sp4d model tree, so the identity
+# rows (G1/G4/repro/census_grid) pin THAT tree, and the rows that carried f1536 stream
+# constants were re-pinned to the run-4 values, each with its rationale:
+#   gateA_p000 / gateA_m10  W1 == base `cmp` holds (164 / 209 x 382-word packets); the md5
+#                           is the f3072 W1 stream (both classes above are gone: no sidx
+#                           column drift, no pre-fix constant -- 209/209 at -10 ppm).
+#   edge_m10                poe == 0 on both trees: the sps-2 occupancy floor leaves no ring
+#                           underrun at -10 ppm (the f1536 ledger's 21 was the pre-floor ring).
+#   G3_ring                 the last-skip frame excludes the record at sidx == nsamp (the
+#                           byte-plane drain skip, see t12b_window.py) and the frame index
+#                           stops before the drain frame 428 (occupancy falls to 1 there);
+#                           occupancy 9..10 after lock is inside the 8..12 band unchanged.
+#   census_grid             every census row up to the bank's last clock is compared (the
+#                           bank's final row is the end-of-run sample, not a 1e6 multiple).
+#   words191/control/nrxw_k1536, merge_control  the +bsskip=3056 control stream at f3072:
+#                           159743 words / 419 frames / 418 lasts / 365 truncation events,
+#                           t7_ok=51 t7_nomagic=374, nrxw 162685. On a model tree the bank
+#                           copy is the SAME tree's output (BS and PAD are one netlist), so
+#                           these rows pin reproducibility, not a BS-vs-PAD contrast.
+#   S1_p000_D2 / S5_p10_ring  t7_ok 424 (one more delivered start-up frame than f1536);
+#                           87 extras at +10 ppm (twice the f1536 fill rate: 0.246 symbols
+#                           per 24634-slot frame) with the ring held at occupancy 23.
+#   m0_n_p10 (R4B +10 ppm)  scores 22.75 % (structural ring overflow, no full-edge branch;
+#                           f1536 reference 6.65 % at half the fill rate) -- the reference
+#                           table carries it; the image runs R4D (sro_sign=1) at this rung.
+#
+# `: depends <leg> ...` ON EVERY CRITERION-ONLY ROW -- REQUIRED AT --jobs > 1.
+# run_gates.sh's dependency rule blocks a pending leg only when one of its WORDS
+# equals a running leg's name, or is extended by it with a trailing `_...`.  Words
+# are split on whitespace and on `/ . | =` but NOT on `_`, so the word a criterion
+# like `cmp -s w1_p000_deliv.txt ...` actually contributes is `w1_p000_deliv` --
+# and the running leg `w1_p000` neither equals it nor extends it.  Such a row is
+# therefore NOT held, and at --jobs 4 it can be offered a free slot while the leg
+# that writes its input is still in flight, failing on a missing or half-written
+# file.  (At --jobs 1 the table order hid this: every leg was already finished.)
+# The fix is local to this table rather than to run_gates.sh: each criterion-only
+# row starts with `: depends <the legs it reads>`, which is a shell no-op that
+# always exits 0 and whose arguments ARE the bare leg names the token rule needs.
+# Whenever a row here is edited, keep its `: depends` list in step with the files
+# the criterion reads.
+#
+# PATH LAYOUT.  sp3 task 11 moved run_gates.sh, score_matrix.py, reference_loss.toml
+# and every .legs table from modem/fixes/gates/ to modem/gates/ (modem/fixes/gates and
+# modem/fixes/run_gates.sh are compatibility symlinks).  $HERE is therefore
+# modem/gates, so the scorer row below reads $HERE/score_matrix.py and
+# $HERE/reference_loss.toml -- NOT the pre-move $HERE/gates/reference_loss.toml.
+#
+# format: name|command|criterion
+
+# =====================================================================
+# FIXCTL=0  (fixctl bit 5 sroSign CLEAR -- the EMPTY-edge R4B configuration)
+# =====================================================================
+
+# --- R4B: the five ppm stimuli, each with its paired score_t7 leg (LOSS= comes
+# --- from <prefix>_t7.log, never from _res.txt -- score_matrix.py ruling (a)).
+m0_n_p000|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21086704 8400 m0_n_p000 2 0 +r4bwin=m0_n_p000_skipwin.txt|test -s m0_n_p000_res.txt && test -s m0_n_p000_seq.txt
+m0_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p000|grep -q 'LOSS=' m0_n_p000_t7.log
+m0_n_p2p5|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p2p5.iq 21086704 8400 m0_n_p2p5 2 0 +r4bwin=m0_n_p2p5_skipwin.txt|test -s m0_n_p2p5_res.txt
+m0_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p2p5|grep -q 'LOSS=' m0_n_p2p5_t7.log
+m0_n_m2p5|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_m2p5.iq 21086704 8400 m0_n_m2p5 2 0 +r4bwin=m0_n_m2p5_skipwin.txt|test -s m0_n_m2p5_res.txt
+m0_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_m2p5|grep -q 'LOSS=' m0_n_m2p5_t7.log
+m0_n_p10|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_p10.iq 21086704 8400 m0_n_p10 2 0 +r4bwin=m0_n_p10_skipwin.txt|test -s m0_n_p10_res.txt
+m0_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_p10|grep -q 'LOSS=' m0_n_p10_t7.log
+m0_n_m10|$RTL/obj_byte_sro_rxfix4b_model_0/Vwrap_byte_sro_model rx $SRO/n_m10.iq 21086704 8400 m0_n_m10 2 0 +r4bwin=m0_n_m10_skipwin.txt|test -s m0_n_m10_res.txt
+m0_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m0_n_m10|grep -q 'LOSS=' m0_n_m10_t7.log
+
+# --- R4B structural legs G1-G4 (build_sro_rxfix4b.legs:35,42,50,59), all on the
+# --- 0 ppm leg, criteria transcribed verbatim with the prefix substituted.
+G1_ident|python3 $SCORE/t12_ident.py m0_n_p000 $BANK/b_p000|grep -q '^T12_IDENT PASS content_equal=True' G1_ident.log && [ "$(sed -n 's/.*common seq: \([0-9]*\).*/\1/p' G1_ident.log | head -1)" -ge 420 ]
+G4_prearm|python3 $SCORE/t12b_prearm.py m0_n_p000 $BANK/b_p000|grep -q 'PRE-ARM IDENTITY HOLDS' G4_prearm.log
+G2_skips|python3 $SCORE/t12b_window.py m0_n_p000|s=$(sed -n 's/.*r3_skips=\([0-9]*\).*/\1/p' m0_n_p000_res.txt) && [ "$s" -ge 4 ] && [ "$s" -le 14 ] && grep -q '^  WINDOW OK: every one of ' G2_skips.log && lk=$(sed -n 's/.*(LOCK) at air frame \([0-9]*\).*/\1/p' G2_skips.log) && la=$(sed -n 's/.*air frames  : first [0-9]*, last \([0-9]*\),.*/\1/p' G2_skips.log) && fa=$(sed -n 's/.*air frames  : first \([0-9]*\),.*/\1/p' G2_skips.log) && [ "$fa" -ge "$lk" ] && [ "$((la - lk))" -le 11 ]
+# build_sro_rxfix4b.legs:33 -- the strict reproduction row.  Kept rather than dropped,
+# and pre-declared above in the "drop-in +1" class: it compares a SAMPLE INDEX against a
+# bank produced on a tree with the generated 64-deep register FIFO.  Its companion below
+# is the part of the claim that is still live on this lineage.
+repro_p000|-|: depends m0_n_p000 && cmp -s m0_n_p000_deliv.txt $BANK/r4b_p000_deliv.txt && cmp -s m0_n_p000_frames.txt $BANK/r4b_p000_frames.txt
+# repro_p000's SURVIVING claim: the delivered CONTENT (nwords, hash, user -- every
+# column but the sample index) must still reproduce the bank frame for frame.  This one
+# is expected to PASS and does; it is what makes the pre-declared failure above a
+# statement about latency rather than a licence to ignore the row.
+repro_p000_content|-|: depends m0_n_p000 && cmp -s <(cut -d, -f2- m0_n_p000_deliv.txt) <(cut -d, -f2- $BANK/r4b_p000_deliv.txt) && [ "$(wc -l < m0_n_p000_deliv.txt)" = "$(wc -l < $BANK/r4b_p000_deliv.txt)" ]
+G3_ring|-|: depends m0_n_p000 && lf=$(awk -F, '!/^#/ && $2 < 21086704 {f=int($2/49268)} END{print f+0}' m0_n_p000_skipwin.txt) && awk -F, -v L="$lf" '$1>L && $1<428 {n++; if($25!=0) bad++; if($23<8||$23>12||$24<8||$24>12) bad++} END{exit !(n>100 && bad==0)}' m0_n_p000_frames.txt
+
+# --- W1 (build_sro_w1.legs:24-27,30,34,37).  W1_LAG=3 on the w1_* legs only.
+w1_p000|env W1_LAG=3 $RTL/obj_byte_w1_w1_model_0/Vwrap_byte_w1_model rx $SRO/s_p000.iq 8129220 8400 w1_p000 2 0|test -s w1_p000_deliv.txt && test -s w1_p000_w1.txt
+base_p000|$RTL/obj_byte_w1_base_model_0/Vwrap_byte_w1_model rx $SRO/s_p000.iq 8129220 8400 base_p000 2 0 base|test -s base_p000_deliv.txt
+w1_m10|env W1_LAG=3 $RTL/obj_byte_w1_w1_model_0/Vwrap_byte_w1_model rx $SRO/s_m10.iq 10346280 8400 w1_m10 2 0|test -s w1_m10_deliv.txt && test -s w1_m10_w1.txt
+base_m10|$RTL/obj_byte_w1_base_model_0/Vwrap_byte_w1_model rx $SRO/s_m10.iq 10346280 8400 base_m10 2 0 base|test -s base_m10_deliv.txt
+gateA_p000|-|: depends w1_p000 base_p000 && cmp -s w1_p000_deliv.txt base_p000_deliv.txt && [ "$(md5sum w1_p000_deliv.txt | cut -c1-32)" = 6d1e78b9f92507df84988cbd8169facb ] && [ "$(wc -l < w1_p000_deliv.txt)" = 164 ]
+gateA_m10|-|: depends w1_m10 base_m10 && cmp -s w1_m10_deliv.txt base_m10_deliv.txt && [ "$(md5sum w1_m10_deliv.txt | cut -c1-32)" = 5dea64b33e911e1efb8d241530d5d38d ] && [ "$(wc -l < w1_m10_deliv.txt)" = 209 ]
+edge_m10|-|: depends w1_m10 && tail -1 w1_m10_w1.txt | awk -F, '{ exit !($9 == 0 && $8 == 0) }'
+
+# --- BS (build_sro_bs.legs:76,87) and PAD (build_sro_pad.legs:55,56,44,58).
+# On a model tree BS and PAD are the SAME netlist (PAD is unconditional), so
+# m_bs_p000 and m_pad_p000 are one leg run through two obj dirs; bs_vs_pad below
+# is what records that rather than presenting them as two results.
+m_bs_p000|$RTL/obj_byte_sro_bs_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21086704 8400 m_bs_p000 2 0 +bsdump=m_bs_p000_census.txt|test -s m_bs_p000_census.txt
+m_pad_p000|$RTL/obj_byte_sro_pad_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21086704 8400 m_pad_p000 2 0 +bsdump=m_pad_p000_census.txt|test -s m_pad_p000_deliv.txt
+m_pad_k1536|$RTL/obj_byte_sro_pad_model_0/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21086704 8400 m_pad_k1536 2 0 +bsskip=3056 +bsskip_at=20000 +bsdump=m_pad_k1536_census.txt|test -s m_pad_k1536_census.txt
+census_clean|-|: depends m_bs_p000 && tail -1 m_bs_p000_census.txt | awk -F, '{ exit !($9 == 0 && $10 == 0 && $15 == 0 && $22 >= 0 && $22 <= 4 && $2 == $3 && $2 == $11 && $5 == $12 && $13 == $14 && $5 > 400) }'
+census_grid|-|: depends m_bs_p000 && STEP=$(awk -F, '!/^#/{if(p!=""){print $1-p; exit} p=$1}' $BANK/bs1_p000_census.txt) && HI=$(tail -1 $BANK/bs1_p000_census.txt | cut -d, -f1) && want=$(awk -F, -v S="$STEP" -v H="$HI" '!/^#/ && $1<=H {n++} END{print n+0}' m_bs_p000_census.txt) && [ "$want" -ge 3 ] && awk -F, -v W="$want" 'NR==FNR{a[$1]=$0;next} !/^#/ && ($1 in a){n++; if(a[$1]!=$0) bad++} END{exit !(n == W && bad == 0)}' $BANK/bs1_p000_census.txt m_bs_p000_census.txt
+words191_k1536|-|: depends m_pad_k1536 && tail -1 m_pad_k1536_census.txt | awk -F, '{ exit !($2 == 159743 && $5 == 419 && $12 == 419 && $9 == 0 && $10 == 0 && $16 == 418 && $22 == 365 && $23 == 0) }'
+control_k1536|-|: depends m_pad_k1536 && grep -q 't7_ok=51 ' m_pad_k1536_res.txt && grep -q 't7_nomagic=374 ' m_pad_k1536_res.txt && grep -q 't7_ok=51 ' $BANK/bs1_k1536_res.txt && grep -q 't7_nomagic=374 ' $BANK/bs1_k1536_res.txt
+nrxw_k1536|-|: depends m_pad_k1536 && grep -q 'nrxw=162685$' m_pad_k1536_res.txt && grep -q 'nrxw=162685$' $BANK/bs1_k1536_res.txt
+merge_control|-|tail -1 $BANK/bs1_k1536_census.txt | awk -F, '{ exit !($5 == 419 && $10 == 0) }'
+# I5's INTENT (the BS wrapper is transparent) on the only comparison that isolates
+# it on one tree: the BS wrapper against the already-gated R4B wrapper, same DUT,
+# same driver, same stimulus.  _res.txt is excluded by construction:
+# wrap_byte_bs.v:297-299 ties the three T7 witness ports off, so a BS binary reads
+# r3_skips=0 r3_extras=0 where the R4B wrapper reads 8 / 0xA5A50002.
+I5_sub|-|: depends m_bs_p000 m0_n_p000 && cmp -s m_bs_p000_frames.txt m0_n_p000_frames.txt && cmp -s m_bs_p000_deliv.txt m0_n_p000_deliv.txt && cmp -s m_bs_p000_seq.txt m0_n_p000_seq.txt
+bs_vs_pad|-|: depends m_bs_p000 m_pad_p000 && cmp -s m_bs_p000_frames.txt m_pad_p000_frames.txt && cmp -s m_bs_p000_deliv.txt m_pad_p000_deliv.txt && cmp -s m_bs_p000_seq.txt m_pad_p000_seq.txt && cmp -s m_bs_p000_census.txt m_pad_p000_census.txt
+
+# =====================================================================
+# FIXCTL=20  (fixctl bit 5 sroSign SET -- the FULL-edge R4D+R1 configuration)
+# =====================================================================
+
+m20_n_p000|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p000.iq 21086704 8400 m20_n_p000 2 0 +r4dwin=m20_n_p000_skipwin.txt|test -s m20_n_p000_res.txt && test -s m20_n_p000_seq.txt
+m20_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p000|grep -q 'LOSS=' m20_n_p000_t7.log
+m20_n_p2p5|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p2p5.iq 21086704 8400 m20_n_p2p5 2 0 +r4dwin=m20_n_p2p5_skipwin.txt|test -s m20_n_p2p5_res.txt
+m20_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p2p5|grep -q 'LOSS=' m20_n_p2p5_t7.log
+m20_n_m2p5|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_m2p5.iq 21086704 8400 m20_n_m2p5 2 0 +r4dwin=m20_n_m2p5_skipwin.txt|test -s m20_n_m2p5_res.txt
+m20_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_m2p5|grep -q 'LOSS=' m20_n_m2p5_t7.log
+m20_n_p10|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_p10.iq 21086704 8400 m20_n_p10 2 0 +r4dwin=m20_n_p10_skipwin.txt|test -s m20_n_p10_res.txt && test -s m20_n_p10_frames.txt
+m20_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_p10|grep -q 'LOSS=' m20_n_p10_t7.log
+m20_n_m10|$RTL/obj_byte_sro_rxfix4dr1_model_20/Vwrap_byte_sro_model rx $SRO/n_m10.iq 21086704 8400 m20_n_m10 2 0 +r4dwin=m20_n_m10_skipwin.txt|test -s m20_n_m10_res.txt
+m20_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py m20_n_m10|grep -q 'LOSS=' m20_n_m10_t7.log
+
+# --- R4D+R1 structural legs S1-S5 (build_sro_rxfix4dr1.legs:36-49).  S1_p000_D1
+# --- and S2_p10_D1 are the SAME score_t7 call as the two _t7 legs above, so they
+# --- are criterion-only rows reading those saved logs rather than a second run.
+S1_p000_D1|-|: depends m20_n_p000 && grep -q 'LOSS=0.00%' m20_n_p000_t7.log
+S1_p000_D2|-|: depends m20_n_p000 && k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' m20_n_p000_res.txt) && [ "$k" = 424 ] && grep -q 'r3_extras=0$' m20_n_p000_res.txt && grep -q '^r3_skips=8 ' m20_n_p000_res.txt
+S2_p10_D1|-|: depends m20_n_p10 && grep -qE 'LOSS=(0\.[0-9][0-9]|1\.00)%' m20_n_p10_t7.log
+S2_p10_D2|-|: depends m20_n_p10 && k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && [ "$k" -ge 420 ]
+S3_p10_pof|-|: depends m20_n_p10 && grep -q 'rh_push_on_full=0 ' m20_n_p10_res.txt
+S4_p10_pdocc|-|: depends m20_n_p10 && grep -q 'pdOcc_end=24634' m20_n_p10_res.txt && awk -F, 'NR>25 && ($29!=24634 || $30!=24634){n++} END{exit n>0}' m20_n_p10_frames.txt
+S5_p10_ring|-|: depends m20_n_p10 && e=$(sed -n 's/.*r3_extras=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && o=$(sed -n 's/.*occTrue_end=\([0-9]*\).*/\1/p' m20_n_p10_res.txt) && [ "$e" -ge 80 ] && [ "$e" -le 95 ] && [ "$o" -ge 21 ] && [ "$o" -le 25 ]
+
+# --- The SAME-TREE runtime-selection row.  Not a ledger row: on n_p000 the ring
+# --- never reaches occ >= 24, so arming bit 5 must change nothing at all.  This is
+# --- the behavioural half of task 5 concern 1, now measurable on one tree.
+sign_identity_p000|-|: depends m20_n_p000 m0_n_p000 && cmp -s m20_n_p000_deliv.txt m0_n_p000_deliv.txt
+
+# =====================================================================
+# THE SCORER -- ten (variant, stimulus) keys against reference_loss.toml.
+# Tolerance rule (score_matrix.py): loss max(0.10, 10 %), counts max(2, ceil(10 %)).
+# =====================================================================
+score|python3 $HERE/score_matrix.py --ref $HERE/reference_loss.toml --run . --map R4B/n_p000=m0_n_p000 --map R4B/n_p2p5=m0_n_p2p5 --map R4B/n_m2p5=m0_n_m2p5 --map R4B/n_p10=m0_n_p10 --map R4B/n_m10=m0_n_m10 --map R4DR1/n_p000=m20_n_p000 --map R4DR1/n_p2p5=m20_n_p2p5 --map R4DR1/n_m2p5=m20_n_m2p5 --map R4DR1/n_p10=m20_n_p10 --map R4DR1/n_m10=m20_n_m10|grep -q '^MATRIX_EXIT 0' score.log

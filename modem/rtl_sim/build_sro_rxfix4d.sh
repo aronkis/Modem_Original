@@ -1,0 +1,56 @@
+#!/bin/bash
+# [sim] Task 14: build the SRO harness against the RXFIX_R4D variant tree.
+# Uses Task 7's sim_sro.cpp UNMODIFIED (that is what makes the n_p000 content-identity
+# gate a test of the RTL and not of a re-typed driver) with the Task 14 wrapper
+# wrap_byte_sro4d.v, which declares the same module name.  FIVE files now declare
+# `module wrap_byte_sro` (tasks 7, 11, 12, 12b and this one), so the build FAILS LOUDLY if
+# Verilator picked up any of the other three.
+#
+# sp3 task 2 (model-backport): TREE=<dir> selects the tree (default unchanged); when
+# TREE ends in s1_rtl_model the harness switches to the fixctl-forcing model wrapper
+# (wrap_byte_sro4d_model.v, FIXCTL=<hex> via -GFIXCTL_INIT), a separate obj dir, and
+# provenance via tree_marker.sh (accepts the injector token or RXFIX_ORIGIN + overlay).
+set -e -o pipefail
+export PATH=/usr/local/bin:/usr/bin:/bin
+KIT=/mnt/onetb/scratch/qpsk-jupiter-modem/modem
+TREE=${TREE:-$KIT/rtl_sim/s1_rtl_rxfix_R4D}; VD=$TREE; FIXCTL=${FIXCTL:-0}
+if [ "$(basename "$TREE")" = s1_rtl_model ]; then
+  MODEL=1; WRAP=wrap_byte_sro4d_model.v; TOP=wrap_byte_sro_model
+  OBJ=obj_byte_sro_rxfix4d_model_$FIXCTL; GPARAM="-GFIXCTL_INIT=32'h$FIXCTL"
+  # the model wrapper's module is wrap_byte_sro_model, so Verilator's class is
+  # Vwrap_byte_sro_model; sim_sro.cpp picks it up under -DSRO_MODEL (sim_w1.cpp's
+  # W1_MODEL idiom).  The DRIVER IS UNCHANGED -- only the class name it opens.
+  CFLAGS_EXTRA="-CFLAGS -DSRO_MODEL"
+else
+  MODEL=0; WRAP=wrap_byte_sro4d.v; TOP=wrap_byte_sro
+  OBJ=obj_byte_sro_rxfix4d; GPARAM=""; CFLAGS_EXTRA=""
+fi
+cd "$KIT/rtl_sim"
+rm -rf "$OBJ"
+verilator -O2 -Wno-fatal --cc "$WRAP" -y "$VD" -y "$KIT/rtl_sim" +define+RXFIX_R4D $GPARAM $CFLAGS_EXTRA --exe sim_sro.cpp \
+  -Mdir "$OBJ" --top-module "$TOP" > "${OBJ}_verilate.log" 2>&1
+# --- wrapper provenance: the verilate log must name $WRAP and NONE of the other
+# --- wrappers that declare `module wrap_byte_sro`(_model).
+if grep -qE '(^|[^34bd])wrap_byte_sro\.v' "${OBJ}_verilate.log"; then
+  echo "BUILD_SRO_RXFIX4D_FAIL wrap_byte_sro.v (task 7 wrapper) was read"; exit 1; fi
+if grep -q 'wrap_byte_sro3s\.v' "${OBJ}_verilate.log"; then
+  echo "BUILD_SRO_RXFIX4D_FAIL wrap_byte_sro3s.v (task 11 wrapper) was read"; exit 1; fi
+if grep -qE 'wrap_byte_sro4\.v' "${OBJ}_verilate.log"; then
+  echo "BUILD_SRO_RXFIX4D_FAIL wrap_byte_sro4.v (task 12 wrapper) was read"; exit 1; fi
+if grep -q 'wrap_byte_sro4b\.v' "${OBJ}_verilate.log"; then
+  echo "BUILD_SRO_RXFIX4D_FAIL wrap_byte_sro4b.v (task 12b wrapper) was read"; exit 1; fi
+grep -qF "$WRAP" "${OBJ}_verilate.log" || \
+  { echo "BUILD_SRO_RXFIX4D_FAIL $WRAP not in the verilate log"; exit 1; }
+if [ "${SKIP_MARKER:-0}" = 1 ]; then
+  echo "TREE_MARKER_SKIPPED $VD R4D"
+else
+  "$KIT/rtl_sim/tree_marker.sh" "$VD" R4D || exit 1
+fi
+if [ "$MODEL" = 0 ]; then
+  for m in RXFIX_R3 RXFIX_R3S RXFIX_R4 RXFIX_R4B; do
+    if grep -qE "$m([^0-9A-Za-z_]|\$)" "$VD/Rate_Handle.v"; then
+      echo "BUILD_SRO_RXFIX4D_FAIL variant tree also carries $m"; exit 1; fi
+  done
+fi
+make -s -j"$(nproc)" -C "$OBJ" -f "V$TOP.mk" "V$TOP" > "${OBJ}_make.log" 2>&1
+echo "BUILD_SRO_RXFIX4D_DONE $KIT/rtl_sim/$OBJ/V$TOP"

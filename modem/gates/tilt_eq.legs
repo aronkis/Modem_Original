@@ -1,0 +1,31 @@
+# tilt_eq.legs -- the receiver in-band tilt corrector (tilt_eq_overlay.m; spec
+# docs/superpowers/specs/2026-10-03-rx-tilt-equaliser-design.md, plan 2026-10-03-rx-tilt-equaliser Task 4).
+#
+# Tree under test: $RTL/s1_rtl_model from a regen that carries tilt_eq_overlay (TxRxComposite ports
+# tilt_eq_a12 / tilt_eq_a3en). Stimulus: the f1536 bank -- run with
+#   modem/gates/run_gates.sh --rung r3 --legs modem/gates/tilt_eq.legs
+# The identity reference lives OUTSIDE the banks (carrier_lock_bank/, listing-digest rule; override CL_BANK).
+#
+# WHAT IS PINNED. te_identity: corrector OFF (words 0) -> decode bit-identical to the sp3clamp004 f1536 tree
+# (first 10 columns of the per-frame row, 120 frames). te_tilt_*: a channel slope of -8/-12/-16/+10 dB across
+# 16 MHz (PERT_TILT_DB) with the exact inverse written (PERT_EQ_AUTO=1) must land in the clean-air regime:
+# every frame from 8 syncs, |median cfc| < 30 units, median |delta cfc| < 200 (perturb_score.py --tilt-budget;
+# without the corrector -16 dB reads 106/112 syncs, bias -11,321, noise 1,769). te_misset_m12: the inverse
+# mis-set by +20 % must still meet the budget (robust to the host's tilt measurement). te_replay_*: the
+# RECORDED live days (10-02 2.1 GHz 46.6 % at -14.6 dB; 10-01 2.0 GHz 2.4 % at -10.5 dB) replayed through the
+# corrected receiver with a from ops/tilt_score.py on those very files; the live signal carries noise, so the
+# sync floor is 95 %, and the live forward plan sits at +20 kHz (healthy cfc median ~ -3400, IQR ~33), so the bias
+# criterion is |median - (-3400)| < 300 (the uncorrected 46 % day read -11,817 with IQR 4,034).
+#
+# frame = 49332 samples; 120 frames = 5919840 samples; the replays use the whole 4 000 000-sample capture.
+te_build|env TREE=s1_rtl_model OBJ=obj_tilt_eq_model WRAP=wrap_byte_sro4b_ss_model.v CFLAGS_EXTRA=-DHAVE_TILT_EQ VDEFINES_EXTRA=+define+HAVE_TILT_EQ $RTL/build_carrier_lock.sh|grep -q '^BUILD_CARRIER_LOCK_DONE ' te_build.log
+te_baseline|env PERT_LOOP=1 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_baseline 2 0|test -s te_baseline_pert.txt
+te_identity|-|: depends te_baseline && cmp -s <(grep -v '^#' te_baseline_pert.txt | cut -d, -f1-10) ${CL_BANK:-/mnt/onetb/scratch/qpsk-build-trees/carrier_lock_bank}/tilt_eq_c004_baseline_f1536_cols1_10.txt
+te_tilt_m8|env PERT_LOOP=1 PERT_TILT_DB=-8 PERT_EQ_AUTO=1 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_tilt_m8 2 0|test -s te_tilt_m8_pert.txt
+te_tilt_m12|env PERT_LOOP=1 PERT_TILT_DB=-12 PERT_EQ_AUTO=1 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_tilt_m12 2 0|test -s te_tilt_m12_pert.txt
+te_tilt_m16|env PERT_LOOP=1 PERT_TILT_DB=-16 PERT_EQ_AUTO=1 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_tilt_m16 2 0|test -s te_tilt_m16_pert.txt
+te_tilt_p10|env PERT_LOOP=1 PERT_TILT_DB=10 PERT_EQ_AUTO=1 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_tilt_p10 2 0|test -s te_tilt_p10_pert.txt
+te_misset_m12|env PERT_LOOP=1 PERT_TILT_DB=-12 PERT_EQ_AUTO=1 PERT_EQ_MISSET=0.2 $RTL/obj_tilt_eq_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5919840 8400 te_misset_m12 2 0|test -s te_misset_m12_pert.txt
+te_budget|python3 $RTL/perturb_score.py --tilt-budget te_tilt_m8_pert.txt te_tilt_m12_pert.txt te_tilt_m16_pert.txt te_tilt_p10_pert.txt te_misset_m12_pert.txt|test "$(grep -c '^PASS ' te_budget.log)" = 5
+te_replay_46|$RTL/tilt_eq_replay.sh $RTL/../../ops/r3cap/fwddiag_20261002_1604/gate3/cell1_A_2100020000/pair.iq $RTL/obj_tilt_eq_model te_replay_46|python3 $RTL/perturb_score.py --tilt-budget --min-syncs 0.95 --bias-center -3400 --max-bias 300 te_replay_46_pert.txt | grep -q '^PASS '
+te_replay_2p4|$RTL/tilt_eq_replay.sh $RTL/../../ops/r3cap/fwdcells_20261001_0826/gate3/cell1_A_2000020000/pair.iq $RTL/obj_tilt_eq_model te_replay_2p4|python3 $RTL/perturb_score.py --tilt-budget --min-syncs 0.95 --bias-center -3400 --max-bias 300 te_replay_2p4_pert.txt | grep -q '^PASS '

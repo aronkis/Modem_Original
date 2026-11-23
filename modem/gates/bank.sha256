@@ -1,0 +1,26 @@
+# bank.sha256 -- pins for the off-repo build inputs the fix chain and the SRO sim
+# gates depend on but that cannot live in git (RTL tarball, the banked Vivado base
+# manifest, and the SRO sim stimulus/scorer tree).
+#
+# Recompute and compare:
+#   sha256sum /mnt/onetb/scratch/qpsk-build-trees/s1_rtl_pristine.tar.gz
+#   sha256sum /mnt/onetb/scratch/qpsk-build-trees/base/BASE_MANIFEST.txt
+#   ( cd /mnt/onetb/scratch/qpsk-build-trees/sro_sim && \
+#     find . -type f -print0 | sort -z | xargs -0 sha256sum ) | sha256sum
+#
+# The third line is a digest-of-a-listing, not a single file's hash: it covers all
+# 910 files sha256sum finds under sro_sim/ by the command above, __pycache__/*.pyc
+# included -- a stray python run in that tree changes mtimes/bytecode and WILL trip
+# BANK_MISMATCH on the listing line. That is a real re-pin trigger, not a bug: re-run
+# the command above and update the line deliberately, the same way a base tree re-fetch
+# gets a deliberate re-pin in fixes.toml (base_tree.sh's BASE_TREE_NEW_FETCH exit 3).
+#
+# sha256(s1_rtl_pristine.tar.gz)
+40d19ff3f578fefad9e70ca602039297441523eca6191a0533c93906f9e98440  s1_rtl_pristine.tar.gz
+# sha256(base/BASE_MANIFEST.txt) -- must equal fixes.toml meta.base_manifest_sha256
+19bb053e9f26bfd9d74e070abbedc715f0fb761e2c7c4472cec5f2feacf6772b  base/BASE_MANIFEST.txt
+# sha256(sha256sum-listing of sro_sim/, 911 files -- sp3 task 3 added
+# n_p2p5.iq (2026-09-11, gen_sro_stim.py tx432.iq n_p2p5.iq --ppm 2.5
+# --no-tile --frames 428, the reference-matrix +2.5 ppm stimulus, missing
+# from the bank until now) -- recipe above)
+776bfda5bb02aa83cf8273e4f67d541e06f9e722ddf258f490e8f2ddac575cd2  sro_sim.listing

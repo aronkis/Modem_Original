@@ -1,0 +1,179 @@
+FLAT_DIFF 24-Sep-2026 09:47:52
+  edited: /mnt/onetb/scratch/qpsk-build-trees/regen_sp4r/derive/jupiter_byte_derive_build/commhdlQPSKTxRxLoopback.slx
+  ref:    /mnt/onetb/scratch/qpsk-build-trees/regen_sp4r/derive/prod_previous.slx
+
+CHECKSUM (name-dependent, informational) edited=9f41c66e4636e800a997fa1e6a2edd50 ref=6e7eb8c7182bf9a3b936aaab26b7cc23
+
+BLOCKS ref=2122 edited=2118 removed=8 added=4
+  - <model>/TxRxComposite/Receiver/QPSK Rx/beatobsI1  [Outport]
+  - <model>/TxRxComposite/Receiver/QPSK Rx/beatobsQ1  [Outport]
+  - <model>/TxRxComposite/Receiver/beatobsI1  [Outport]
+  - <model>/TxRxComposite/Receiver/beatobsQ1  [Outport]
+  - <model>/TxRxComposite/T_cleanup4  [Terminator]
+  - <model>/TxRxComposite/T_cleanup5  [Terminator]
+  - <model>/TxRxComposite/Transmitter/T_cleanup6  [Terminator]
+  - <model>/TxRxComposite/Transmitter/T_cleanup7  [Terminator]
+  + <model>/TxRxComposite/Receiver/QPSK Rx/BoTermI  [Terminator]
+  + <model>/TxRxComposite/Receiver/QPSK Rx/BoTermQ  [Terminator]
+  + <model>/TxRxComposite/Transmitter/T_cleanup4  [Terminator]
+  + <model>/TxRxComposite/Transmitter/T_cleanup5  [Terminator]
+
+CHANGED (type or key params):
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/beatfix_viol_count
+      ref:    Outport Port=33 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=31 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/beatfix_viol_latch
+      ref:    Outport Port=34 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=32 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/r4_extras
+      ref:    Outport Port=31 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=29 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/r4_wit
+      ref:    Outport Port=30 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=28 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/sro_mode
+      ref:    Outport Port=32 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=30 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_cfc
+      ref:    Outport Port=26 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=24 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_cs
+      ref:    Outport Port=27 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=25 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_pc
+      ref:    Outport Port=29 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=27 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_pd
+      ref:    Outport Port=28 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=26 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_rh
+      ref:    Outport Port=25 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=23 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_ss
+      ref:    Outport Port=24 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=22 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_wita
+      ref:    Outport Port=22 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=20 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/QPSK Rx/w1_witb
+      ref:    Outport Port=23 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=21 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/beatfix_viol_count
+      ref:    Outport Port=39 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=37 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/beatfix_viol_latch
+      ref:    Outport Port=40 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=38 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/r4_extras
+      ref:    Outport Port=37 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=35 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/r4_wit
+      ref:    Outport Port=36 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=34 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/sro_mode
+      ref:    Outport Port=38 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=36 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_cfc
+      ref:    Outport Port=32 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=30 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_cs
+      ref:    Outport Port=33 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=31 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_pc
+      ref:    Outport Port=35 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=33 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_pd
+      ref:    Outport Port=34 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=32 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_rh
+      ref:    Outport Port=31 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=29 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_ss
+      ref:    Outport Port=30 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=28 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_wita
+      ref:    Outport Port=28 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=26 OutDataTypeStr=Inherit: auto SampleTime=-1
+  ~ <model>/TxRxComposite/Receiver/w1_witb
+      ref:    Outport Port=29 OutDataTypeStr=Inherit: auto SampleTime=-1
+      edited: Outport Port=27 OutDataTypeStr=Inherit: auto SampleTime=-1
+
+CONNECTIONS ref=2397 edited=2393 removed=37 added=33
+  - <model>/TxRxComposite/Receiver/QPSK Rx/BoOutDtcI:1 -> <model>/TxRxComposite/Receiver/QPSK Rx/beatobsI1:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx/BoOutDtcQ:1 -> <model>/TxRxComposite/Receiver/QPSK Rx/beatobsQ1:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:20 -> <model>/TxRxComposite/Receiver/beatobsI1:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:21 -> <model>/TxRxComposite/Receiver/beatobsQ1:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:22 -> <model>/TxRxComposite/Receiver/w1_wita:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:23 -> <model>/TxRxComposite/Receiver/w1_witb:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:24 -> <model>/TxRxComposite/Receiver/w1_ss:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:25 -> <model>/TxRxComposite/Receiver/w1_rh:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:26 -> <model>/TxRxComposite/Receiver/w1_cfc:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:27 -> <model>/TxRxComposite/Receiver/w1_cs:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:28 -> <model>/TxRxComposite/Receiver/w1_pd:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:29 -> <model>/TxRxComposite/Receiver/w1_pc:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:30 -> <model>/TxRxComposite/Receiver/r4_wit:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:31 -> <model>/TxRxComposite/Receiver/r4_extras:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:32 -> <model>/TxRxComposite/Receiver/sro_mode:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:33 -> <model>/TxRxComposite/Receiver/beatfix_viol_count:1
+  - <model>/TxRxComposite/Receiver/QPSK Rx:34 -> <model>/TxRxComposite/Receiver/beatfix_viol_latch:1
+  - <model>/TxRxComposite/Receiver:26 -> <model>/TxRxComposite/debugI1:1
+  - <model>/TxRxComposite/Receiver:27 -> <model>/TxRxComposite/debugQ1:1
+  - <model>/TxRxComposite/Receiver:28 -> <model>/TxRxComposite/reg_w1_wita:1
+  - <model>/TxRxComposite/Receiver:29 -> <model>/TxRxComposite/reg_w1_witb:1
+  - <model>/TxRxComposite/Receiver:30 -> <model>/TxRxComposite/reg_w1_ss:1
+  - <model>/TxRxComposite/Receiver:31 -> <model>/TxRxComposite/reg_w1_rh:1
+  - <model>/TxRxComposite/Receiver:32 -> <model>/TxRxComposite/reg_w1_cfc:1
+  - <model>/TxRxComposite/Receiver:33 -> <model>/TxRxComposite/reg_w1_cs:1
+  - <model>/TxRxComposite/Receiver:34 -> <model>/TxRxComposite/reg_w1_pd:1
+  - <model>/TxRxComposite/Receiver:35 -> <model>/TxRxComposite/reg_w1_pc:1
+  - <model>/TxRxComposite/Receiver:36 -> <model>/TxRxComposite/reg_r4_wit:1
+  - <model>/TxRxComposite/Receiver:37 -> <model>/TxRxComposite/reg_r4_extras:1
+  - <model>/TxRxComposite/Receiver:38 -> <model>/TxRxComposite/reg_sro_mode:1
+  - <model>/TxRxComposite/Receiver:39 -> <model>/TxRxComposite/reg_beatfix_viol_count:1
+  - <model>/TxRxComposite/Receiver:40 -> <model>/TxRxComposite/reg_beatfix_viol_latch:1
+  - <model>/TxRxComposite/Receiver:8 -> <model>/TxRxComposite/T_cleanup3:1
+  - <model>/TxRxComposite/Receiver:9 -> <model>/TxRxComposite/T_cleanup4:1
+  - <model>/TxRxComposite/Transmitter/QPSK Tx:3 -> <model>/TxRxComposite/Transmitter/T_cleanup6:1
+  - <model>/TxRxComposite/Transmitter/Repeat1:1 -> <model>/TxRxComposite/Transmitter/T_cleanup7:1
+  - <model>/TxRxComposite/Transmitter:3 -> <model>/TxRxComposite/T_cleanup5:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx/BoOutDtcI:1 -> <model>/TxRxComposite/Receiver/QPSK Rx/BoTermI:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx/BoOutDtcQ:1 -> <model>/TxRxComposite/Receiver/QPSK Rx/BoTermQ:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:20 -> <model>/TxRxComposite/Receiver/w1_wita:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:21 -> <model>/TxRxComposite/Receiver/w1_witb:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:22 -> <model>/TxRxComposite/Receiver/w1_ss:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:23 -> <model>/TxRxComposite/Receiver/w1_rh:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:24 -> <model>/TxRxComposite/Receiver/w1_cfc:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:25 -> <model>/TxRxComposite/Receiver/w1_cs:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:26 -> <model>/TxRxComposite/Receiver/w1_pd:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:27 -> <model>/TxRxComposite/Receiver/w1_pc:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:28 -> <model>/TxRxComposite/Receiver/r4_wit:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:29 -> <model>/TxRxComposite/Receiver/r4_extras:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:30 -> <model>/TxRxComposite/Receiver/sro_mode:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:31 -> <model>/TxRxComposite/Receiver/beatfix_viol_count:1
+  + <model>/TxRxComposite/Receiver/QPSK Rx:32 -> <model>/TxRxComposite/Receiver/beatfix_viol_latch:1
+  + <model>/TxRxComposite/Receiver:26 -> <model>/TxRxComposite/reg_w1_wita:1
+  + <model>/TxRxComposite/Receiver:27 -> <model>/TxRxComposite/reg_w1_witb:1
+  + <model>/TxRxComposite/Receiver:28 -> <model>/TxRxComposite/reg_w1_ss:1
+  + <model>/TxRxComposite/Receiver:29 -> <model>/TxRxComposite/reg_w1_rh:1
+  + <model>/TxRxComposite/Receiver:30 -> <model>/TxRxComposite/reg_w1_cfc:1
+  + <model>/TxRxComposite/Receiver:31 -> <model>/TxRxComposite/reg_w1_cs:1
+  + <model>/TxRxComposite/Receiver:32 -> <model>/TxRxComposite/reg_w1_pd:1
+  + <model>/TxRxComposite/Receiver:33 -> <model>/TxRxComposite/reg_w1_pc:1
+  + <model>/TxRxComposite/Receiver:34 -> <model>/TxRxComposite/reg_r4_wit:1
+  + <model>/TxRxComposite/Receiver:35 -> <model>/TxRxComposite/reg_r4_extras:1
+  + <model>/TxRxComposite/Receiver:36 -> <model>/TxRxComposite/reg_sro_mode:1
+  + <model>/TxRxComposite/Receiver:37 -> <model>/TxRxComposite/reg_beatfix_viol_count:1
+  + <model>/TxRxComposite/Receiver:38 -> <model>/TxRxComposite/reg_beatfix_viol_latch:1
+  + <model>/TxRxComposite/Receiver:8 -> <model>/TxRxComposite/debugI1:1
+  + <model>/TxRxComposite/Receiver:9 -> <model>/TxRxComposite/debugQ1:1
+  + <model>/TxRxComposite/Transmitter/QPSK Tx:3 -> <model>/TxRxComposite/Transmitter/T_cleanup4:1
+  + <model>/TxRxComposite/Transmitter/Repeat1:1 -> <model>/TxRxComposite/Transmitter/T_cleanup5:1
+  + <model>/TxRxComposite/Transmitter:3 -> <model>/TxRxComposite/T_cleanup3:1
+
+STRUCTURE DIFFERENT
+
+TxRxComposite PORTS (number:name)  -- order matters to the injectors and the AXI map
+  Inport ref=24 edited=24 (identical)
+  Outport ref=57 edited=57 (identical)
+
+LINES ref=2654 edited=2650

@@ -1,0 +1,7 @@
+DERIVATION 2026-09-24T09:52:53-04:00
+dev git: 00bde48c
+env: QPSK_LEAN=1 QPSK_FRAME=f3072 QPSK_SPS=2 QPSK_BEATFIX=1 QPSK_BEATOBS=1 QPSK_FRAMESTAT=1 QPSK_RXFIX=1 QPSK_TXFIX=1
+model md5: c0a25b6b7623
+kit: /mnt/onetb/scratch/qpsk-build-trees/regen_sp4r/derive/jupiter_byte_derive_build
+vs previous prod: FLAT_DIFF_DONE structure=different blocks-=8 blocks+=4 changed=26 conn-=37 conn+=33 -> /mnt/onetb/scratch/qpsk-build-trees/regen_sp4r/derive/jupiter_byte_derive_build/FLAT_DIFF.txt
+chain: make_flat_model -> rename reg_ -> order -> layout(composite, Receiver) -> snap -> simfix -> prod_cleanup -> root harness -> gates patched

@@ -1,0 +1,11 @@
+== GATE build_sro_rxfix4d.sh  key=build_sro_rxfix4d  role=B  ts=1789074539
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_rxfix4d.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_rxfix4d   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE build (from 2026-09-10T13:01:52-04:00)
+LEG_REUSE r4d_p000 (from 2026-09-10T13:38:53-04:00)
+LEG_REUSE repro_p000 (from 2026-09-10T13:38:53-04:00)
+LEG_REUSE J5_ident (from 2026-09-10T13:39:23-04:00)
+LEG_REUSE J5_extras (from 2026-09-10T13:39:23-04:00)
+LEG_REUSE S1_vs_r4b (from 2026-09-10T13:39:23-04:00)
+GATE_LEGS build_sro_rxfix4d.sh pass=6 fail=0 wall=00:00:00
+GATE_PASS build_sro_rxfix4d.sh wall=00:00:00

@@ -1,0 +1,16 @@
+== GATE build_sro_pad.sh  key=build_sro_pad  role=A  ts=1789068170
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_pad.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_pad   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE tree (from 2026-09-10T11:42:26-04:00)
+LEG_REUSE build (from 2026-09-10T11:42:56-04:00)
+LEG_REUSE pad_p000 (from 2026-09-10T12:20:57-04:00)
+LEG_REUSE pad_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE ident_p000 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE ident_p000_res (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE repro_pad (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE control_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE words191_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE merge_control (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE nrxw_k1536 (from 2026-09-10T12:59:28-04:00)
+GATE_LEGS build_sro_pad.sh pass=11 fail=0 wall=00:00:00
+GATE_PASS build_sro_pad.sh wall=00:00:00

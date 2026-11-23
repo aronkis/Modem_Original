@@ -1,0 +1,200 @@
+
+Phase 8 Route finalize | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:09 ; elapsed = 00:02:35 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20656 ; free virtual = 48445
+
+Phase 9 Verifying routed nets
+
+ Verification completed successfully
+Phase 9 Verifying routed nets | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:09 ; elapsed = 00:02:36 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20656 ; free virtual = 48445
+
+Phase 10 Depositing Routes
+Phase 10 Depositing Routes | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:17 ; elapsed = 00:02:40 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20655 ; free virtual = 48444
+INFO: [Route 72-16] Aggressive Explore Summary
++======+=======+=====+=======+=====+========+==============+===================+
+| Pass |  WNS  | TNS |  WHS  | THS | Status | Elapsed Time | Solution Selected |
++======+=======+=====+=======+=====+========+==============+===================+
+|  1   | 0.040 |  -  | 0.010 |  -  |  Pass  |   00:02:31   |         x         |
+|  2   |   -   |  -  |   -   |  -  |  Skip  |   00:00:00   |                   |
++------+-------+-----+-------+-----+--------+--------------+-------------------+
+
+
+Phase 11 Resolve XTalk
+Phase 11 Resolve XTalk | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:18 ; elapsed = 00:02:40 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20655 ; free virtual = 48444
+
+Phase 12 Post Process Routing
+Phase 12 Post Process Routing | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:19 ; elapsed = 00:02:41 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20655 ; free virtual = 48444
+
+Phase 13 Route finalize
+Phase 13 Route finalize | Checksum: 16a23758b
+
+Time (s): cpu = 00:08:19 ; elapsed = 00:02:41 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20655 ; free virtual = 48444
+
+Phase 14 Post Router Timing
+INFO: [Route 35-20] Post Routing Timing Summary | WNS=0.041  | TNS=0.000  | WHS=0.010  | THS=0.000  |
+
+Phase 14 Post Router Timing | Checksum: 10d275b78
+
+Time (s): cpu = 00:09:33 ; elapsed = 00:02:56 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20651 ; free virtual = 48440
+INFO: [Route 35-61] The design met the timing requirement.
+Total Elapsed time in route_design: 176.08 secs
+
+Phase 15 Post-Route Event Processing
+Phase 15 Post-Route Event Processing | Checksum: 1c89ac194
+
+Time (s): cpu = 00:09:34 ; elapsed = 00:02:56 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20651 ; free virtual = 48440
+INFO: [Route 35-16] Router Completed Successfully
+Ending Routing Task | Checksum: 1c89ac194
+
+Time (s): cpu = 00:09:36 ; elapsed = 00:02:57 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20647 ; free virtual = 48437
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+157 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:09:45 ; elapsed = 00:02:59 . Memory (MB): peak = 5922.562 ; gain = 60.996 ; free physical = 20647 ; free virtual = 48436
+INFO: [Vivado 12-24828] Executing command : report_drc -file system_top_drc_routed.rpt -pb system_top_drc_routed.pb -rpx system_top_drc_routed.rpx
+Command: report_drc -file system_top_drc_routed.rpt -pb system_top_drc_routed.pb -rpx system_top_drc_routed.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 6 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file /mnt/disk2/scratch/qpsk-builds/jupiter_byte_rxfixr4dr1sp2_build/hdl_prj_jupiter_composite/vivado_ip_prj/vivado_prj.runs/impl_1/system_top_drc_routed.rpt.
+report_drc completed successfully
+INFO: [Vivado 12-24828] Executing command : report_methodology -file system_top_methodology_drc_routed.rpt -pb system_top_methodology_drc_routed.pb -rpx system_top_methodology_drc_routed.rpx
+Command: report_methodology -file system_top_methodology_drc_routed.rpt -pb system_top_methodology_drc_routed.pb -rpx system_top_methodology_drc_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-133] Running Methodology with 6 threads
+INFO: [Vivado_Tcl 2-1520] The results of Report Methodology are in file /mnt/disk2/scratch/qpsk-builds/jupiter_byte_rxfixr4dr1sp2_build/hdl_prj_jupiter_composite/vivado_ip_prj/vivado_prj.runs/impl_1/system_top_methodology_drc_routed.rpt.
+report_methodology completed successfully
+report_methodology: Time (s): cpu = 00:01:16 ; elapsed = 00:00:19 . Memory (MB): peak = 5922.562 ; gain = 0.000 ; free physical = 20630 ; free virtual = 48427
+INFO: [Vivado 12-24828] Executing command : report_timing_summary -max_paths 10 -routable_nets -report_unconstrained -file system_top_timing_summary_routed.rpt -pb system_top_timing_summary_routed.pb -rpx system_top_timing_summary_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 6 CPUs
+WARNING: [Timing 38-436] There are set_bus_skew constraint(s) in this design. Please run report_bus_skew to ensure that bus skew requirements are met.
+report_timing_summary: Time (s): cpu = 00:00:38 ; elapsed = 00:00:13 . Memory (MB): peak = 5922.562 ; gain = 0.000 ; free physical = 20620 ; free virtual = 48432
+INFO: [Vivado 12-24838] Running report commands "report_bus_skew, report_incremental_reuse, report_route_status" in parallel.
+Running report generation with 3 threads.
+INFO: [Vivado 12-24828] Executing command : report_incremental_reuse -file system_top_incremental_reuse_routed.rpt
+INFO: [Vivado_Tcl 4-1062] Incremental flow is disabled. No incremental reuse Info to report.
+INFO: [Vivado 12-24828] Executing command : report_bus_skew -warn_on_violation -file system_top_bus_skew_routed.rpt -pb system_top_bus_skew_routed.pb -rpx system_top_bus_skew_routed.rpx
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 6 CPUs
+INFO: [Vivado 12-24828] Executing command : report_route_status -file system_top_route_status.rpt -pb system_top_route_status.pb
+INFO: [Vivado 12-24828] Executing command : report_power -file system_top_power_routed.rpt -pb system_top_power_summary_routed.pb -rpx system_top_power_routed.rpx
+Command: report_power -file system_top_power_routed.rpt -pb system_top_power_summary_routed.pb -rpx system_top_power_routed.rpx
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+WARNING: [Power 33-332] Found switching activity that implies high-fanout reset nets being asserted for excessive periods of time which may result in inaccurate power analysis.
+Resolution: To review and fix problems, please run Power Constraints Advisor in the GUI from Tools > Power Constraints Advisor or run report_power with the -advisory option to generate a text report.
+177 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+report_power completed successfully
+report_power: Time (s): cpu = 00:00:32 ; elapsed = 00:00:16 . Memory (MB): peak = 5962.582 ; gain = 40.020 ; free physical = 20616 ; free virtual = 48445
+INFO: [Vivado 12-24828] Executing command : report_clock_utilization -file system_top_clock_utilization_routed.rpt
+generate_parallel_reports: Time (s): cpu = 00:02:46 ; elapsed = 00:00:57 . Memory (MB): peak = 5962.582 ; gain = 40.020 ; free physical = 20612 ; free virtual = 48441
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00.9 ; elapsed = 00:00:00.19 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20598 ; free virtual = 48449
+Wrote PlaceDB: Time (s): cpu = 00:00:10 ; elapsed = 00:00:03 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20494 ; free virtual = 48445
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20494 ; free virtual = 48445
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20482 ; free virtual = 48453
+Wrote Netlist Cache: Time (s): cpu = 00:00:00.18 ; elapsed = 00:00:00.1 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20481 ; free virtual = 48463
+Wrote Device Cache: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20474 ; free virtual = 48459
+Write Physdb Complete: Time (s): cpu = 00:00:13 ; elapsed = 00:00:04 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20474 ; free virtual = 48459
+INFO: [Common 17-1381] The checkpoint '/mnt/disk2/scratch/qpsk-builds/jupiter_byte_rxfixr4dr1sp2_build/hdl_prj_jupiter_composite/vivado_ip_prj/vivado_prj.runs/impl_1/system_top_routed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:16 ; elapsed = 00:00:07 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20575 ; free virtual = 48449
+Command: phys_opt_design -directive AggressiveExplore
+Attempting to get a license for feature 'Implementation' and/or device 'xczu3eg'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xczu3eg'
+INFO: [Vivado_Tcl 4-241] Physical synthesis in post route mode 
+INFO: [Vivado_Tcl 4-137] Directive used for phys_opt_design is: AggressiveExplore
+INFO: [Vivado_Tcl 4-2280] Estimated Timing Summary | WNS= 0.041 | TNS= 0.000 | WHS= 0.010 |
+INFO: [Vivado_Tcl 4-383] Design worst setup slack (WNS) is greater than or equal to 0.000 ns. All physical synthesis setup optimizations will be skipped.
+INFO: [Vivado_Tcl 4-2291] Design worst hold slack (WHS) is greater than or equal to 0.000 ns. Hold fix optimization will be skipped.
+ 
+INFO: [Vivado_Tcl 4-232] No setup violation found. The netlist was not modified.
+INFO: [Common 17-83] Releasing license: Implementation
+188 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+phys_opt_design completed successfully
+INFO: [Vivado 12-24828] Executing command : report_timing_summary -max_paths 10 -report_unconstrained -warn_on_violation -file system_top_timing_summary_postroute_physopted.rpt -pb system_top_timing_summary_postroute_physopted.pb -rpx system_top_timing_summary_postroute_physopted.rpx
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 6 CPUs
+WARNING: [Timing 38-436] There are set_bus_skew constraint(s) in this design. Please run report_bus_skew to ensure that bus skew requirements are met.
+INFO: [Vivado 12-24828] Executing command : report_bus_skew -warn_on_violation -file system_top_bus_skew_postroute_physopted.rpt -pb system_top_bus_skew_postroute_physopted.pb -rpx system_top_bus_skew_postroute_physopted.rpx
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 6 CPUs
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00.87 ; elapsed = 00:00:00.2 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20549 ; free virtual = 48461
+Wrote PlaceDB: Time (s): cpu = 00:00:10 ; elapsed = 00:00:03 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20448 ; free virtual = 48459
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20448 ; free virtual = 48459
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20433 ; free virtual = 48465
+Wrote Netlist Cache: Time (s): cpu = 00:00:00.18 ; elapsed = 00:00:00.09 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20422 ; free virtual = 48464
+Wrote Device Cache: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20414 ; free virtual = 48460
+Write Physdb Complete: Time (s): cpu = 00:00:13 ; elapsed = 00:00:05 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20414 ; free virtual = 48460
+INFO: [Common 17-1381] The checkpoint '/mnt/disk2/scratch/qpsk-builds/jupiter_byte_rxfixr4dr1sp2_build/hdl_prj_jupiter_composite/vivado_ip_prj/vivado_prj.runs/impl_1/system_top_postroute_physopt.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:16 ; elapsed = 00:00:08 . Memory (MB): peak = 5962.582 ; gain = 0.000 ; free physical = 20508 ; free virtual = 48443
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s05_nodes/s05_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s04_nodes/s04_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s04_nodes/s04_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s04_nodes/s04_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s04_nodes/s04_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s03_nodes/s03_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s03_nodes/s03_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s03_nodes/s03_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s03_nodes/s03_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s02_nodes/s02_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s02_nodes/s02_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s02_nodes/s02_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s02_nodes/s02_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s01_nodes/s01_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_w_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/s00_nodes/s00_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[5].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[5].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[1].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[1].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[0].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_si_handler/gen_si_handler.gen_request_fifos.gen_req_fifo[0].inst_req_fifo/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_w_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_r_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_r_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_r_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_b_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_b_node/inst/inst_mi_handler/gen_normal_area.gen_fifo_req.inst_fifo_req/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_aw_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to distributed. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the i_system_wrapper/system_i/axi_hpc0_interconnect/inst/m00_nodes/m00_ar_node/inst/inst_mi_handler/gen_normal_area.inst_fifo_node_payld/gen_xpm_memory_fifo.inst_fifo/gen_mem_rep[0].inst_xpm_memory/xpm_memory_base_inst block.
+Command: write_bitstream -force system_top.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xczu3eg'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xczu3eg'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 6 threads
+INFO: [Vivado 12-3199] DRC finished with 0 Errors
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+INFO: [Designutils 20-2272] Running write_bitstream with 6 threads.
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ./system_top.bit...
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Common 17-83] Releasing license: Implementation
+228 Infos, 3 Warnings, 0 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:00:42 ; elapsed = 00:00:39 . Memory (MB): peak = 6181.562 ; gain = 218.980 ; free physical = 20203 ; free virtual = 48143
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 10 17:42:43 2026...
+[Thu Sep 10 17:42:49 2026] impl_1 finished
+wait_on_runs: Time (s): cpu = 00:00:02 ; elapsed = 00:12:03 . Memory (MB): peak = 5963.711 ; gain = 0.000 ; free physical = 25201 ; free virtual = 53135
+TXFIX_ROUTED_WNS wns=0.040989 tns=0.000000
+BYTE_BUILD_DONE md5=d94b4df391a1e84f53426755f469fc7e
+TXFIX_BUILD_DONE variant=F3 md5=d94b4df391a1e84f53426755f469fc7e wns=1.544
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 10 17:42:50 2026...

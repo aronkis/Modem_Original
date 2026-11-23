@@ -1,0 +1,50 @@
+LEG_REUSE build_w1 (from 2026-09-10T08:05:22-04:00)
+LEG_REUSE build_base (from 2026-09-10T08:05:52-04:00)
+LEG_REUSE w1_p000 (from 2026-09-10T08:20:22-04:00)
+LEG_REUSE base_p000 (from 2026-09-10T08:35:22-04:00)
+LEG_REUSE w1_m10 (from 2026-09-10T08:53:53-04:00)
+LEG_REUSE base_m10 (from 2026-09-10T09:12:23-04:00)
+LEG_REUSE gateA_p000 (from 2026-09-10T09:12:23-04:00)
+LEG_REUSE gateA_m10 (from 2026-09-10T09:12:23-04:00)
+LEG_REUSE edge_m10 (from 2026-09-10T09:12:23-04:00)
+GATE_LEGS build_sro_w1.sh pass=9 fail=0 wall=00:00:01
+GATE_PASS build_sro_w1.sh wall=00:00:01
+LEG_REUSE build (from 2026-09-10T09:12:53-04:00)
+LEG_REUSE r4b_p000 (from 2026-09-10T09:49:54-04:00)
+LEG_REUSE repro_p000 (from 2026-09-10T09:49:54-04:00)
+LEG_REUSE G1_ident (from 2026-09-10T09:50:24-04:00)
+LEG_REUSE G4_prearm (from 2026-09-10T09:50:54-04:00)
+LEG_PASS G2_skips  00:00:30
+LEG_PASS G3_ring  00:00:00
+GATE_LEGS build_sro_rxfix4b.sh pass=7 fail=0 wall=00:00:30
+GATE_PASS build_sro_rxfix4b.sh wall=00:00:30
+LEG_REUSE build (from 2026-09-10T09:51:54-04:00)
+LEG_REUSE bsw_p000 (from 2026-09-10T10:28:25-04:00)
+LEG_REUSE bsb_p000 (from 2026-09-10T11:04:55-04:00)
+LEG_REUSE bs1_p000 (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I1_frames (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I4_res (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I5_wrapper (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE repro_p000 (from 2026-09-10T11:41:56-04:00)
+LEG_PASS census_clean  00:00:00
+LEG_PASS census_grid  00:00:00
+GATE_LEGS build_sro_bs.sh pass=10 fail=0 wall=00:00:00
+GATE_PASS build_sro_bs.sh wall=00:00:00
+LEG_REUSE tree (from 2026-09-10T11:42:26-04:00)
+LEG_REUSE build (from 2026-09-10T11:42:56-04:00)
+LEG_REUSE pad_p000 (from 2026-09-10T12:20:57-04:00)
+LEG_REUSE pad_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE ident_p000 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE ident_p000_res (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE repro_pad (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE control_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE words191_k1536 (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE merge_control (from 2026-09-10T12:59:28-04:00)
+LEG_REUSE nrxw_k1536 (from 2026-09-10T12:59:28-04:00)
+GATE_LEGS build_sro_pad.sh pass=11 fail=0 wall=00:00:00
+GATE_PASS build_sro_pad.sh wall=00:00:00
+LEG_REUSE unit (from 2026-09-10T12:59:58-04:00)
+GATE_LEGS seqbist_unit/run_unit.sh pass=1 fail=0 wall=00:00:00
+GATE_PASS seqbist_unit/run_unit.sh wall=00:00:00
+GATES_DONE role=A pass=5 fail=0
+RUNGATES_A_RC=0

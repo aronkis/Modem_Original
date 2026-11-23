@@ -1,0 +1,15 @@
+== GATE build_sro_bs.sh  key=build_sro_bs  role=A  ts=1789068170
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_bs.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_bs   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE build (from 2026-09-10T09:51:54-04:00)
+LEG_REUSE bsw_p000 (from 2026-09-10T10:28:25-04:00)
+LEG_REUSE bsb_p000 (from 2026-09-10T11:04:55-04:00)
+LEG_REUSE bs1_p000 (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I1_frames (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I4_res (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE I5_wrapper (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE repro_p000 (from 2026-09-10T11:41:56-04:00)
+LEG_REUSE census_clean (from 2026-09-10T15:15:12-04:00)
+LEG_REUSE census_grid (from 2026-09-10T15:15:12-04:00)
+GATE_LEGS build_sro_bs.sh pass=10 fail=0 wall=00:00:00
+GATE_PASS build_sro_bs.sh wall=00:00:00

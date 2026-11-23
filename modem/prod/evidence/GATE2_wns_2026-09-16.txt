@@ -1,0 +1,3 @@
+MODEM_CLK_WNS clock=axi_adrv9001_adc_1_clk wns=1.126 tns=0.0 failing=0 total=87943
+BUILD_IMAGE_WNS_OK wns=1.126 floor=0.005 ref_pad=0.105 ref_sp2A=0.447 ref_sp2B=0.785
+BUILD_IMAGE_DONE tag=sp3prod image=/mnt/onetb/scratch/qpsk-build-trees/work_sp3prod/BOOT.BIN.jupiter.sp3prod.b68dbf1d9321 md5=b68dbf1d932186ad1f769ebb7dbfbc03 modem_wns=1.126

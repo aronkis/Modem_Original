@@ -1,0 +1,15 @@
+== GATE build_sro_rxfix4dr1.sh  key=build_sro_rxfix4dr1  role=B  ts=1789074539
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_rxfix4dr1.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_rxfix4dr1   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE build (from 2026-09-10T13:39:53-04:00)
+LEG_REUSE r4dr1_p000 (from 2026-09-10T14:14:24-04:00)
+LEG_REUSE r4dr1_p10 (from 2026-09-10T14:48:54-04:00)
+LEG_REUSE S1_p000_D1 (from 2026-09-10T14:51:29-04:00)
+LEG_REUSE S1_p000_D2 (from 2026-09-10T14:48:54-04:00)
+LEG_REUSE S2_p10_D1 (from 2026-09-10T14:51:59-04:00)
+LEG_REUSE S2_p10_D2 (from 2026-09-10T14:48:54-04:00)
+LEG_REUSE S3_p10_pof (from 2026-09-10T14:48:54-04:00)
+LEG_REUSE S4_p10_pdocc (from 2026-09-10T14:48:54-04:00)
+LEG_REUSE S5_p10_ring (from 2026-09-10T14:48:55-04:00)
+GATE_LEGS build_sro_rxfix4dr1.sh pass=10 fail=0 wall=00:00:00
+GATE_PASS build_sro_rxfix4dr1.sh wall=00:00:00

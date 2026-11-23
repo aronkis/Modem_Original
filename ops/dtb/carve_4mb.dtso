@@ -1,0 +1,31 @@
+/dts-v1/;
+/plugin/;
+
+/* =============================================================================
+ * carve_4mb.dtso -- grow the qpsk byte-DMA carve to 4 MB @ 0x7FC00000 for the
+ * f3072 rung (sp4, plan docs/superpowers/plans/2026-09-13-2sps-rung.md Task 10).
+ *
+ * Applied by ops/dtb/build_dtb_4mb.sh with fdtoverlay ON TOP of the merged
+ * qpsk dtb (pristine base + modem/boot/qpsk_byte_uio.dtso), never on the
+ * target: U-Boot loads one flat system.dtb.
+ *
+ * Same design as fragment@1 of qpsk_byte_uio.dtso: the EXISTING
+ * qpsk_byte_buf node is edited in place (one carve node, no overlap, no stale
+ * entry); the unit-name stays @7ff00000 (cosmetic, reg is authoritative) so
+ * the target-path is stable. The 4 MB span 0x7FC00000..0x7FFFFFFF is the top
+ * of the 2 GB DDR (memory reg <0 0 0 0x80000000>) and CONTAINS the 2 MB and
+ * 1 MB carves, so a host built for the 2 MB layout still runs on this dtb.
+ * Host side: host/qpsk_hw.h QPSK_CARVE_4MB (QPSK_DMA_BUF_BASE 0x7FC00000,
+ * QPSK_CARVE_BYTES 0x400000); qpsk_tun -G3 refuses any other build.
+ * ============================================================================= */
+
+/ {
+    fragment@0 {
+        target-path = "/reserved-memory/qpsk_byte_buf@7ff00000";
+        __overlay__ {
+            /* reserved-memory is #address-cells=2 #size-cells=2 */
+            reg = <0x00 0x7fc00000 0x00 0x400000>;   /* 4 MB, was 2 MB @ 0x7fe00000 */
+            no-map;
+        };
+    };
+};

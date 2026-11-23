@@ -1,0 +1,56 @@
+# reference_matrix.legs -- sp3 task 3: the ppm reference matrix Gate 1 (the
+# model-tree backport) will compare its simulated loss against. Runs the
+# DEFAULT injected trees only (no TREE=/FIXCTL= override) for the two shipped
+# role variants (R4B, R4DR1) across five stimuli, plus W1's two banked legs.
+# R4D-alone is excluded (refuted); BS and PAD have no ppm dependence and are
+# covered by their own tables (not here).
+#
+# Ledgers: docs/evidence/comb/RXFIX_R4B_SIM_GATE.md, RXFIX_S1_SIM_GATE.md
+#          (R4DR1 = R4D+R1), RXFIX_W1_SIM_GATE.md.
+# Command shape (ruling (c)): Vwrap_byte_sro rx $SRO/<stim>.iq 21114096 8400
+# <prefix> 2 0, R4B ADDS +r4bwin=<prefix>_skipwin.txt (R4DR1 does not, per
+# the controller ruling amending this brief -- the plusarg only feeds a
+# window file this table does not score).
+#
+# Loss does NOT come from <prefix>_res.txt: each R4B/R4DR1 run leg is
+# followed by a paired scorer leg (env T7_NAIR=428 python3 $SCORE/score_t7.py
+# <prefix>) whose stdout run_gates.sh already saves as <prefix>_t7.log (leg
+# name = <prefix>_t7), which is where collect_reference.py and score_matrix.py
+# read LOSS= from.
+#
+# W1's rows reuse the exact command shapes in build_sro_w1.legs (w1_p000 on
+# s_p000.iq, w1_m10 on s_m10.iq) -- a different harness (sim_w1.cpp,
+# Vwrap_byte_w1) with no _seq.txt, so no paired score_t7 leg for these two.
+#
+# format: name|command|criterion
+
+# --- R4B (obj_byte_sro_rxfix4b/Vwrap_byte_sro, +r4bwin) ---
+r4b_n_p000|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_p000.iq 21114096 8400 r4b_n_p000 2 0 +r4bwin=r4b_n_p000_skipwin.txt|test -s r4b_n_p000_res.txt
+r4b_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4b_n_p000|grep -q 'LOSS=' r4b_n_p000_t7.log
+r4b_n_p2p5|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_p2p5.iq 21114096 8400 r4b_n_p2p5 2 0 +r4bwin=r4b_n_p2p5_skipwin.txt|test -s r4b_n_p2p5_res.txt
+r4b_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4b_n_p2p5|grep -q 'LOSS=' r4b_n_p2p5_t7.log
+r4b_n_m2p5|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_m2p5.iq 21114096 8400 r4b_n_m2p5 2 0 +r4bwin=r4b_n_m2p5_skipwin.txt|test -s r4b_n_m2p5_res.txt
+r4b_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4b_n_m2p5|grep -q 'LOSS=' r4b_n_m2p5_t7.log
+r4b_n_p10|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_p10.iq 21114096 8400 r4b_n_p10 2 0 +r4bwin=r4b_n_p10_skipwin.txt|test -s r4b_n_p10_res.txt
+r4b_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4b_n_p10|grep -q 'LOSS=' r4b_n_p10_t7.log
+r4b_n_m10|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_m10.iq 21114096 8400 r4b_n_m10 2 0 +r4bwin=r4b_n_m10_skipwin.txt|test -s r4b_n_m10_res.txt
+r4b_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4b_n_m10|grep -q 'LOSS=' r4b_n_m10_t7.log
+
+# --- R4DR1 (obj_byte_sro_rxfix4dr1/Vwrap_byte_sro) ---
+r4dr1_n_p000|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_p000.iq 21114096 8400 r4dr1_n_p000 2 0|test -s r4dr1_n_p000_res.txt
+r4dr1_n_p000_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_n_p000|grep -q 'LOSS=' r4dr1_n_p000_t7.log
+r4dr1_n_p2p5|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_p2p5.iq 21114096 8400 r4dr1_n_p2p5 2 0|test -s r4dr1_n_p2p5_res.txt
+r4dr1_n_p2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_n_p2p5|grep -q 'LOSS=' r4dr1_n_p2p5_t7.log
+r4dr1_n_m2p5|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_m2p5.iq 21114096 8400 r4dr1_n_m2p5 2 0|test -s r4dr1_n_m2p5_res.txt
+r4dr1_n_m2p5_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_n_m2p5|grep -q 'LOSS=' r4dr1_n_m2p5_t7.log
+r4dr1_n_p10|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_p10.iq 21114096 8400 r4dr1_n_p10 2 0|test -s r4dr1_n_p10_res.txt
+r4dr1_n_p10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_n_p10|grep -q 'LOSS=' r4dr1_n_p10_t7.log
+r4dr1_n_m10|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_m10.iq 21114096 8400 r4dr1_n_m10 2 0|test -s r4dr1_n_m10_res.txt
+r4dr1_n_m10_t7|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_n_m10|grep -q 'LOSS=' r4dr1_n_m10_t7.log
+
+# --- W1 (obj_byte_w1/Vwrap_byte_w1, build_sro_w1.legs command shapes) ---
+w1_p000|$RTL/obj_byte_w1/Vwrap_byte_w1 rx $SRO/s_p000.iq 8139780 8400 w1_p000 2 0|test -s w1_p000_res.txt
+w1_m10|$RTL/obj_byte_w1/Vwrap_byte_w1 rx $SRO/s_m10.iq 10359720 8400 w1_m10 2 0|test -s w1_m10_res.txt
+
+# --- collect ---
+collect|python3 $HERE/collect_reference.py --out $HERE/reference_loss.toml r4b_n_p000 r4b_n_p2p5 r4b_n_m2p5 r4b_n_p10 r4b_n_m10 r4dr1_n_p000 r4dr1_n_p2p5 r4dr1_n_m2p5 r4dr1_n_p10 r4dr1_n_m10 w1_p000 w1_m10|test -s $HERE/reference_loss.toml && [ "$(grep -c loss_pct $HERE/reference_loss.toml)" = 10 ]

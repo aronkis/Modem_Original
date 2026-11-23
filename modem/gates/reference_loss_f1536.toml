@@ -1,0 +1,126 @@
+[ref."R4B/n_p000"]
+loss_pct = 0.0
+skips = 8
+opens = 9
+pop_on_empty = 34
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "e2bf49fcfcd5e4946d4ec9454adeb98f6b0901fcb7cbffcb2d3e2cb879d05f74"
+
+[ref."R4B/n_p2p5"]
+loss_pct = 0.71
+skips = 7
+opens = 21
+pop_on_empty = 110
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "e2bf49fcfcd5e4946d4ec9454adeb98f6b0901fcb7cbffcb2d3e2cb879d05f74"
+
+[ref."R4B/n_m2p5"]
+loss_pct = 0.0
+skips = 0
+opens = 18
+pop_on_empty = 34
+push_on_full = 18
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "e2bf49fcfcd5e4946d4ec9454adeb98f6b0901fcb7cbffcb2d3e2cb879d05f74"
+
+[ref."R4B/n_p10"]
+loss_pct = 6.65
+skips = 7
+opens = 32
+pop_on_empty = 178
+push_on_full = 28
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "e2bf49fcfcd5e4946d4ec9454adeb98f6b0901fcb7cbffcb2d3e2cb879d05f74"
+
+[ref."R4B/n_m10"]
+loss_pct = 0.48
+skips = 30
+opens = 9
+pop_on_empty = 34
+push_on_full = 17
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "e2bf49fcfcd5e4946d4ec9454adeb98f6b0901fcb7cbffcb2d3e2cb879d05f74"
+
+[ref."R4DR1/n_p000"]
+loss_pct = 0.0
+skips = 8
+extras = 0
+opens = 9
+pop_on_empty = 34
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "36e0c447fe9d247823471f1b06e86a3f358ec509cc0ce4ef91fc877aa13cdecc"
+
+[ref."R4DR1/n_p2p5"]
+loss_pct = 0.71
+skips = 7
+extras = 0
+opens = 21
+pop_on_empty = 110
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "36e0c447fe9d247823471f1b06e86a3f358ec509cc0ce4ef91fc877aa13cdecc"
+
+[ref."R4DR1/n_m2p5"]
+loss_pct = 0.0
+skips = 0
+extras = 8
+opens = 10
+pop_on_empty = 34
+push_on_full = 18
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "36e0c447fe9d247823471f1b06e86a3f358ec509cc0ce4ef91fc877aa13cdecc"
+
+[ref."R4DR1/n_p10"]
+loss_pct = 0.0
+skips = 7
+extras = 37
+opens = 23
+pop_on_empty = 178
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "36e0c447fe9d247823471f1b06e86a3f358ec509cc0ce4ef91fc877aa13cdecc"
+
+[ref."R4DR1/n_m10"]
+loss_pct = 0.48
+skips = 37
+extras = 7
+opens = 9
+pop_on_empty = 34
+push_on_full = 17
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21114096
+tree_sha = "36e0c447fe9d247823471f1b06e86a3f358ec509cc0ce4ef91fc877aa13cdecc"
+
+[ref."W1/p000"]
+mismatches = 0
+delivered = 164
+nsamp = 8139780
+tree_sha = "a36c34448273d584f2823a4d7e53ec349c69a014da4142f789f6f25ad9430437"
+
+[ref."W1/m10"]
+mismatches = 0
+delivered = 209
+nsamp = 10359720
+tree_sha = "a36c34448273d584f2823a4d7e53ec349c69a014da4142f789f6f25ad9430437"

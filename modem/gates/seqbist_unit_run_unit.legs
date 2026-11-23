@@ -1,0 +1,9 @@
+# seqbist_unit_run_unit.legs -- fixes.toml [gates] common = ["seqbist_unit/run_unit.sh"].
+# The script is its own ledger: it scores each step by that step's PASS token (vvp
+# always exits 0) and prints SEQBIST_UNIT_EXIT=<code> as its last line, "printed even
+# when a step fails or crashes, so the trailer is always the credit" (run_unit.sh
+# header).  Nine steps: gen_frames, four verilator lint runs, four iverilog TBs.
+# Runs in seconds; no stimulus, no board, no network.
+#
+# format: name|command|criterion
+unit|$RTL/seqbist_unit/run_unit.sh|grep -q '^SEQBIST_UNIT_EXIT=0$' unit.log && [ "$(grep -c '^  ok   ' unit.log)" = 9 ] && ! grep -q '^  FAIL ' unit.log

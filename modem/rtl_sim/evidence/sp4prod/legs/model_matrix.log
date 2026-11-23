@@ -1,0 +1,89 @@
+== GATE model_matrix  key=model_matrix  role=legs  ts=1790109220
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/gates/model_matrix.legs
+== work /mnt/onetb/scratch/sp2_gates/work/model_matrix   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim_f3072
+Running as unit: sp2-gate-model_matrix-m0_n_p000-1790109220.service; invocation ID: b66f177c99194dddba1066086c76a330
+Running as unit: sp2-gate-model_matrix-m0_n_p2p5-1790109220.service; invocation ID: 1dc0537850f84ed3838bd9c17d55487c
+Running as unit: sp2-gate-model_matrix-m0_n_m2p5-1790109220.service; invocation ID: 7f12ad768f91428a95b0e1d7631ee112
+Running as unit: sp2-gate-model_matrix-m0_n_p10-1790109220.service; invocation ID: 1a95506b0f514849a04d98d06fd6ce1d
+LEG_PASS m0_n_p000  00:06:00
+LEG_PASS m0_n_p2p5  00:06:00
+LEG_PASS m0_n_m2p5  00:06:00
+LEG_PASS m0_n_p10  00:06:00
+Running as unit: sp2-gate-model_matrix-m0_n_p000_t7-1790109220.service; invocation ID: 4d3c87417c094ba79fb4a15456f999cf
+Running as unit: sp2-gate-model_matrix-m0_n_p2p5_t7-1790109220.service; invocation ID: 91e1bebbe61d4069b24c8a3cc71acd2d
+Running as unit: sp2-gate-model_matrix-m0_n_m2p5_t7-1790109220.service; invocation ID: b067309513f9477198fc2c1cbf090d90
+Running as unit: sp2-gate-model_matrix-m0_n_p10_t7-1790109220.service; invocation ID: 915a9018be48490aa53e4986baa578ca
+LEG_PASS m0_n_p000_t7  00:00:00
+Running as unit: sp2-gate-model_matrix-m0_n_m10-1790109220.service; invocation ID: 97d6d65905c34f75a2d9ae5eb24d6bc4
+LEG_PASS m0_n_p2p5_t7  00:00:00
+LEG_PASS m0_n_m2p5_t7  00:00:00
+LEG_PASS m0_n_p10_t7  00:00:01
+Running as unit: sp2-gate-model_matrix-G1_ident-1790109220.service; invocation ID: 1ce8cca7a6d94a8b94deba47e469455f
+Running as unit: sp2-gate-model_matrix-G4_prearm-1790109220.service; invocation ID: 75018670fd2f4e6d9aa09b22fbce7bd1
+Running as unit: sp2-gate-model_matrix-G2_skips-1790109220.service; invocation ID: 4abc93f7ec2340c78f3587293d3a9caf
+LEG_PASS G1_ident  00:00:00
+LEG_PASS G4_prearm  00:00:00
+LEG_PASS repro_p000  00:00:00
+LEG_PASS repro_p000_content  00:00:00
+LEG_PASS G3_ring  00:00:00
+Running as unit: sp2-gate-model_matrix-w1_p000-1790109220.service; invocation ID: 029c4b75a969404ca034bb47451d9941
+Running as unit: sp2-gate-model_matrix-base_p000-1790109220.service; invocation ID: 54c7adf86e8a4dba97dba9d164f4dd99
+LEG_PASS G2_skips  00:00:00
+Running as unit: sp2-gate-model_matrix-w1_m10-1790109220.service; invocation ID: cd70717e0dbc4d45ba40a1fc59e4f4b0
+LEG_PASS w1_p000  00:02:30
+LEG_PASS base_p000  00:02:30
+Running as unit: sp2-gate-model_matrix-base_m10-1790109220.service; invocation ID: 37f14a9903c1420a9699653134a7294c
+LEG_PASS gateA_p000  00:00:00
+Running as unit: sp2-gate-model_matrix-m_bs_p000-1790109220.service; invocation ID: 012619a637ec4211aab6a89e9b5ea7a2
+LEG_PASS w1_m10  00:03:00
+LEG_PASS edge_m10  00:00:00
+Running as unit: sp2-gate-model_matrix-m_pad_p000-1790109220.service; invocation ID: c3cec626d615443babee5575553700c0
+LEG_PASS base_m10  00:03:00
+LEG_PASS gateA_m10  00:00:00
+Running as unit: sp2-gate-model_matrix-m_pad_k1536-1790109220.service; invocation ID: a0b4f5279e7a4e32b97462e9aed4ade7
+LEG_PASS m0_n_m10  00:06:01
+Running as unit: sp2-gate-model_matrix-m0_n_m10_t7-1790109220.service; invocation ID: 1bf93c648d2c4bf2a4ad44c410c475f5
+LEG_PASS m0_n_m10_t7  00:00:31
+LEG_PASS merge_control  00:00:00
+Running as unit: sp2-gate-model_matrix-m20_n_p000-1790109220.service; invocation ID: 7ec20512c3c04fbfbf7b07a4f2d9ccd9
+LEG_PASS m_bs_p000  00:06:01
+LEG_PASS census_clean  00:00:00
+LEG_PASS census_grid  00:00:00
+LEG_PASS I5_sub  00:00:00
+Running as unit: sp2-gate-model_matrix-m20_n_p2p5-1790109220.service; invocation ID: 3e9980611e28416dbf4dfcfda92a816c
+LEG_PASS m_pad_p000  00:06:01
+LEG_PASS bs_vs_pad  00:00:00
+Running as unit: sp2-gate-model_matrix-m20_n_m2p5-1790109220.service; invocation ID: 221f4a47550143aaa62377be2ea6657a
+LEG_PASS m_pad_k1536  00:06:01
+LEG_PASS words191_k1536  00:00:00
+LEG_PASS control_k1536  00:00:00
+LEG_PASS nrxw_k1536  00:00:00
+Running as unit: sp2-gate-model_matrix-m20_n_p10-1790109220.service; invocation ID: 9478b6e7926b43be9b7a2a0a322004d3
+LEG_PASS m20_n_p000  00:06:00
+Running as unit: sp2-gate-model_matrix-m20_n_p000_t7-1790109220.service; invocation ID: 11451f2767c64fb993a42523b2004a50
+LEG_PASS m20_n_p000_t7  00:00:30
+Running as unit: sp2-gate-model_matrix-m20_n_m10-1790109220.service; invocation ID: 7a52e4e682554db3bf64494c4a539f36
+LEG_PASS m20_n_p2p5  00:06:01
+Running as unit: sp2-gate-model_matrix-m20_n_p2p5_t7-1790109220.service; invocation ID: 00f0cbd992054595b3f3f15dfe413235
+LEG_PASS m20_n_p2p5_t7  00:00:30
+LEG_PASS m20_n_m2p5  00:06:01
+Running as unit: sp2-gate-model_matrix-m20_n_m2p5_t7-1790109220.service; invocation ID: 55215369f5164d0ca9835b9797021b44
+LEG_PASS S1_p000_D1  00:00:00
+LEG_PASS S1_p000_D2  00:00:00
+LEG_PASS sign_identity_p000  00:00:00
+LEG_PASS m20_n_m2p5_t7  00:00:00
+LEG_PASS m20_n_p10  00:06:01
+Running as unit: sp2-gate-model_matrix-m20_n_p10_t7-1790109220.service; invocation ID: e7c88bb1215348c282388c309dc7a4c6
+LEG_PASS m20_n_p10_t7  00:00:00
+LEG_PASS S2_p10_D1  00:00:00
+LEG_PASS S2_p10_D2  00:00:00
+LEG_PASS S3_p10_pof  00:00:00
+LEG_PASS S4_p10_pdocc  00:00:00
+LEG_PASS S5_p10_ring  00:00:00
+LEG_PASS m20_n_m10  00:06:00
+Running as unit: sp2-gate-model_matrix-m20_n_m10_t7-1790109220.service; invocation ID: dbd98c59d7304aa6888c1422dcdf459c
+LEG_PASS m20_n_m10_t7  00:00:30
+Running as unit: sp2-gate-model_matrix-score-1790109220.service; invocation ID: 905e988d517647b0b42e32a0d1373b46
+LEG_PASS score  00:00:30
+GATE_LEGS model_matrix pass=53 fail=0 wall=00:26:04
+GATE_PASS model_matrix wall=00:26:04

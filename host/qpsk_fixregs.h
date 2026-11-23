@@ -1,0 +1,33 @@
+/* generated from modem/regmap/regmap.toml sha 85c09033e68ece08; do not edit */
+#ifndef QPSK_FIXREGS_H
+#define QPSK_FIXREGS_H
+
+#define QPSK_REG_FIXCTL 0x208
+#define QPSK_FIXCTL_W1_FREEZE_BIT 4
+#define QPSK_FIXCTL_SRO_SIGN_BIT 5
+
+#define QPSK_REG_W1_WITA 0x214
+#define QPSK_REG_W1_WITB 0x218
+#define QPSK_REG_W1_SS 0x21C
+#define QPSK_REG_W1_RH 0x220
+#define QPSK_REG_W1_CFC 0x224
+#define QPSK_REG_W1_CS 0x228
+#define QPSK_REG_W1_PD 0x22C
+#define QPSK_REG_W1_PC 0x230
+#define QPSK_REG_R4_WIT 0x234
+#define QPSK_REG_R4_EXTRAS 0x238
+#define QPSK_REG_BS_WORDS 0x23C
+#define QPSK_REG_BS_STARTS 0x240
+#define QPSK_REG_BS_PUSH 0x244
+#define QPSK_REG_BS_POP 0x248
+#define QPSK_REG_BS_DROP 0x24C
+#define QPSK_REG_BS_MARKS 0x250
+#define QPSK_REG_BS_EVT 0x254
+#define QPSK_REG_BS_CNT 0x258
+#define QPSK_REG_SRO_MODE 0x25C
+#define QPSK_REG_TILT_EQ_A12 0x260
+#define QPSK_REG_TILT_EQ_A3EN 0x264
+
+#define QPSK_R4D_SWAPPED_MD5 "9acbe2ebe1dbf280e030952fc4fc23d8"
+
+#endif /* QPSK_FIXREGS_H */

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jupiter QPSK modem: how an image is built</title>
+<style>
+  :root {
+    --paper: #f7f1e6;
+    --page: #fbf8f2;
+    --ink: #1f2328;
+    --ink-soft: #4d555e;
+    --rule: #cfc6b6;
+    --blue: #d4e1ec;
+    --amber: #f4dca0;
+    --peach: #f7c8a4;
+    --lilac: #e0d0e8;
+    --green: #cfe3d1;
+    --slate: #2b4a6b;
+    --code-bg: #efe8da;
+    --link: #1f4f7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1a2028;
+      --page: #12171d;
+      --ink: #e5e5e5;
+      --ink-soft: #aab3bd;
+      --rule: #3a4653;
+      --blue: #2c4257;
+      --amber: #5b4a1e;
+      --peach: #5c3a28;
+      --lilac: #45364f;
+      --green: #2c4a35;
+      --slate: #9fc0dc;
+      --code-bg: #0e1319;
+      --link: #8fc1e8;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 16px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--link); }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--slate); outline-offset: 2px; }
+  code, pre, kbd {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.86em;
+  }
+  code { background: var(--code-bg); padding: 0.05em 0.3em; border-radius: 3px; }
+  pre {
+    background: var(--code-bg);
+    border-left: 4px solid var(--slate);
+    padding: 0.8em 1em;
+    overflow-x: auto;
+    line-height: 1.45;
+    margin: 1em 0;
+  }
+  pre code { background: none; padding: 0; font-size: 1em; }
+
+  .shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 2.5rem; max-width: 1240px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+  nav.toc { position: sticky; top: 0; align-self: start; padding-top: 2.2rem; max-height: 100vh; overflow-y: auto; font-size: 0.92rem; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--rule); }
+  nav.toc li a { display: block; padding: 0.3rem 0 0.3rem 0.9rem; color: var(--ink-soft); text-decoration: none; }
+  nav.toc li a:hover { color: var(--ink); }
+  nav.toc .tocnum { display: inline-block; width: 1.6em; color: var(--slate); font-variant-numeric: tabular-nums; }
+  main { min-width: 0; max-width: 78ch; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; gap: 1rem; }
+    nav.toc { position: static; max-height: none; padding-top: 1rem; }
+    main { max-width: none; }
+  }
+
+  header.hero { padding: 2.6rem 0 1.2rem; }
+  header.hero h1 { font-size: 2.15rem; line-height: 1.15; margin: 0 0 0.6rem; font-weight: 650; letter-spacing: -0.01em; }
+  header.hero p.lede { font-size: 1.08rem; color: var(--ink-soft); margin: 0 0 0.4rem; max-width: 62ch; }
+  header.hero p.meta { font-size: 0.9rem; color: var(--ink-soft); margin: 0; }
+
+  h2 { font-size: 1.5rem; margin: 3rem 0 0.8rem; padding-top: 0.4rem; border-top: 3px solid var(--rule); font-weight: 650; }
+  h2 .num { color: var(--slate); font-variant-numeric: tabular-nums; margin-right: 0.5rem; }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 0.5rem; font-weight: 650; }
+  p { margin: 0.7rem 0; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.25rem 0; }
+
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+  th, td { text-align: left; vertical-align: top; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--rule); }
+  th { background: var(--paper); font-weight: 650; }
+  td code { overflow-wrap: anywhere; }
+
+  .panel { background: var(--paper); border-radius: 6px; padding: 0.9rem 1.1rem; margin: 1.2rem 0; }
+  .panel.blue { border-left: 6px solid var(--blue); }
+  .panel.amber { border-left: 6px solid var(--amber); }
+  .panel.peach { border-left: 6px solid var(--peach); }
+  .panel.lilac { border-left: 6px solid var(--lilac); }
+  .panel p:first-child { margin-top: 0; }
+  .panel p:last-child { margin-bottom: 0; }
+  .token { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.84em; background: var(--green); padding: 0.05em 0.35em; border-radius: 3px; white-space: nowrap; }
+  .fail { background: var(--peach); }
+
+  figure.rail { margin: 1.4rem 0 0.4rem; }
+  @media (min-width: 1100px) { figure.rail { width: calc(100% + 16rem); } }
+  figure.rail svg { width: 100%; height: auto; display: block; }
+  figure.rail figcaption { font-size: 0.88rem; color: var(--ink-soft); margin-top: 0.4rem; }
+  svg.adi-figure text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: var(--ink); }
+  svg.adi-figure .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; fill: var(--ink); }
+  svg.adi-figure .lane { fill: var(--paper); stroke: var(--rule); }
+  svg.adi-figure .stage { stroke: var(--rule); stroke-width: 1; }
+  svg.adi-figure .t { font-size: 14px; font-weight: 650; }
+  svg.adi-figure .s { font-size: 11.5px; fill: var(--ink-soft); }
+  svg.adi-figure .arrow { stroke: var(--slate); stroke-width: 2; fill: none; marker-end: url(#arr); }
+  svg.adi-figure .gate { fill: var(--green); stroke: var(--rule); }
+  svg.adi-figure .host { font-size: 12px; fill: var(--slate); font-weight: 650; }
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="toc" aria-label="Contents">
+  <ol>
+    <li><a href="#overview"><span class="tocnum">0</span>Overview</a></li>
+    <li><a href="#entry"><span class="tocnum">1</span>Entry point and stages</a></li>
+    <li><a href="#model"><span class="tocnum">2</span>Simulink model build flow</a></li>
+    <li><a href="#postgen"><span class="tocnum">3</span>Changes after HDL Coder</a></li>
+    <li><a href="#gate1"><span class="tocnum">4</span>Simulation gate</a></li>
+    <li><a href="#vivado"><span class="tocnum">5</span>Remote synthesis and bootgen</a></li>
+    <li><a href="#image"><span class="tocnum">6</span>Image bank and deploy</a></li>
+    <li><a href="#tools"><span class="tocnum">7</span>Tools besides Simulink, MATLAB, Vivado</a></li>
+    <li><a href="#gates"><span class="tocnum">8</span>Gate summary</a></li>
+    <li><a href="#traps"><span class="tocnum">9</span>Known traps</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>How a Jupiter QPSK modem image is built</h1>
+  <p class="lede">From the Simulink model to a <code>BOOT.BIN</code> on the board: the model overlay stack, what is changed in the generated HDL afterwards, the two Vivado sessions, and every other tool in the chain.</p>
+  <p class="meta">Describes the sp3 single-image chain that produced the deployed <code>sp3txclk</code> pair (2026-09-13). Paths are relative to the repository root unless they start with <code>/</code>.</p>
+</header>
+
+<h2 id="overview"><span class="num">0</span>Overview</h2>
+<p>One script, <code>modem/build_image.sh</code>, drives three stages. The first stage runs on the build workstation (MATLAB R2025b and a local Vivado 2025.1 for block-design work), the second is Verilator simulation, and the third is synthesis on the remote host <code>hdl-dev-2</code>. Every stage ends by printing a token that the next stage greps for. The diagram reads left to right; the line under each box is the token that proves the stage finished.</p>
+
+<figure class="rail">
+<svg class="adi-figure" viewBox="0 0 1100 420" role="img" aria-labelledby="railtitle">
+  <title id="railtitle">Build pipeline: model, HDL Coder, post-generation edits, block design, simulation gate, remote synthesis, image bank, flash</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--slate)"/>
+    </marker>
+  </defs>
+
+  <!-- lanes -->
+  <rect class="lane" x="10" y="12" width="700" height="396" rx="8"/>
+  <text class="host" x="24" y="34">build workstation (nemo): MATLAB R2025b, local Vivado 2025.1, Verilator 5.020</text>
+  <rect class="lane" x="724" y="12" width="176" height="396" rx="8"/>
+  <text class="host" x="738" y="34">hdl-dev-2: Vivado 2025.1</text>
+  <rect class="lane" x="914" y="12" width="176" height="396" rx="8"/>
+  <text class="host" x="928" y="34">bank and boards</text>
+
+  <!-- stage: hdl -->
+  <text class="s" x="24" y="66">stage hdl (about 1 h)</text>
+  <rect class="stage" x="24" y="76" width="150" height="72" rx="6" fill="var(--blue)"/>
+  <text class="t" x="34" y="98">Simulink model</text>
+  <text class="s" x="34" y="116">overlay stack in</text>
+  <text class="s" x="34" y="130">assemble_jupiter_240k5_byte.m</text>
+
+  <rect class="stage" x="200" y="76" width="150" height="72" rx="6" fill="var(--blue)"/>
+  <text class="t" x="210" y="98">HDL Coder</text>
+  <text class="s" x="210" y="116">hdlworkflow_loopback.m</text>
+  <text class="s" x="210" y="130">IP core TxRxCompo_ip_v1_0</text>
+
+  <rect class="stage" x="376" y="76" width="150" height="72" rx="6" fill="var(--amber)"/>
+  <text class="t" x="386" y="98">Netlist edits</text>
+  <text class="s" x="386" y="116">rxfifo_inject.sh</text>
+  <text class="s" x="386" y="130">txcap / ddrcap / ddrcap2</text>
+
+  <rect class="stage" x="552" y="76" width="150" height="72" rx="6" fill="var(--amber)"/>
+  <text class="t" x="562" y="98">Block design</text>
+  <text class="s" x="562" y="116">complete_byte_bd.tcl</text>
+  <text class="s" x="562" y="130">ddrcap_bd, seqbist_bd</text>
+
+  <path class="arrow" d="M174 112 H198"/>
+  <path class="arrow" d="M350 112 H374"/>
+  <path class="arrow" d="M526 112 H550"/>
+
+  <rect class="gate" x="24" y="160" width="678" height="22" rx="4"/>
+  <text class="mono" x="34" y="175">BUILD_HDL_BD_OK  BUILD_HDL_KIT_OK  MODEL_OVERLAYS_OK  BS_READY_PAD_OK  -&gt;  STAMP.hdl</text>
+
+  <!-- stage: gates -->
+  <text class="s" x="24" y="216">stage gates (Gate 1)</text>
+  <rect class="stage" x="24" y="226" width="326" height="60" rx="6" fill="var(--lilac)"/>
+  <text class="t" x="34" y="248">Simulation equivalence</text>
+  <text class="s" x="34" y="266">make_sro_trees.sh, tree_marker.sh, run_gates.sh (Verilator)</text>
+
+  <rect class="gate" x="24" y="298" width="326" height="22" rx="4"/>
+  <text class="mono" x="34" y="313">GATES_DONE ... fail=0   -&gt;  STAMP.gates</text>
+
+  <path class="arrow" d="M330 182 V224"/>
+
+  <!-- stage: vivado (kit assembly on nemo, synth remote) -->
+  <text class="s" x="376" y="216">stage vivado (Gate 2, about 2 h 15)</text>
+  <rect class="stage" x="376" y="226" width="326" height="60" rx="6" fill="var(--peach)"/>
+  <text class="t" x="386" y="248">Kit: build_txfix.sh</text>
+  <text class="s" x="386" y="266">preflight, rsync kit out, launch unit, poll, rsync back</text>
+
+  <rect class="gate" x="376" y="298" width="326" height="22" rx="4"/>
+  <text class="mono" x="386" y="313">MODEM_CLK_WNS  BUILD_IMAGE_WNS_OK  -&gt;  STAMP.vivado</text>
+
+  <path class="arrow" d="M350 256 H374"/>
+
+  <!-- remote -->
+  <rect class="stage" x="738" y="226" width="148" height="60" rx="6" fill="var(--peach)"/>
+  <text class="t" x="748" y="248">build_txfix.tcl</text>
+  <text class="s" x="748" y="264">pre_synth hook, synth,</text>
+  <text class="s" x="748" y="278">impl explore, bootgen</text>
+  <rect class="gate" x="738" y="298" width="148" height="22" rx="4"/>
+  <text class="mono" x="748" y="313">TXFIX_BUILD_DONE</text>
+  <path class="arrow" d="M702 256 H736"/>
+  <path class="arrow" d="M736 268 H704" />
+
+  <!-- bank / flash -->
+  <rect class="stage" x="928" y="226" width="148" height="60" rx="6" fill="var(--green)"/>
+  <text class="t" x="938" y="248">images/ bank</text>
+  <text class="s" x="938" y="264">MD5SUMS, CURRENT.txt</text>
+  <text class="s" x="938" y="278">roles A=148, B=146</text>
+  <rect class="stage" x="928" y="332" width="148" height="60" rx="6" fill="var(--green)"/>
+  <text class="t" x="938" y="354">Flash rails (Gate 3)</text>
+  <text class="s" x="938" y="370">ops/flash/flash_148_txfix.sh</text>
+  <text class="s" x="938" y="384">ops/flash/flash_146_txfix.sh</text>
+  <path class="arrow" d="M886 256 H926"/>
+  <path class="arrow" d="M1002 286 V330"/>
+
+  <text class="mono" x="376" y="352">BUILD_IMAGE_DONE tag= image= md5= modem_wns=</text>
+  <text class="s" x="376" y="372">The BOOT.BIN is copied to &lt;work&gt;/BOOT.BIN.jupiter.&lt;tag&gt;.&lt;md5&gt; and banked by hand.</text>
+</svg>
+<figcaption>Stages of <code>modem/build_image.sh</code>. The remote arrow pair is the rsync out and the rsync back of the log, the timing reports and the boot image.</figcaption>
+</figure>
+
+<h2 id="entry"><span class="num">1</span>Entry point and stages</h2>
+<p>The recommended launch keeps the whole run in a transient user unit so it survives the shell that started it:</p>
+<pre><code>systemd-run --user --collect --same-dir --unit sp3-build-$(date +%s) \
+  bash -c 'modem/build_image.sh --tag sp3 --remote-base /mnt/disk2/scratch/qpsk-builds \
+           &gt; /mnt/onetb/scratch/qpsk-build-trees/work_sp3/build.out 2&gt;&amp;1'</code></pre>
+<table>
+  <tr><th>Option or default</th><th>Meaning</th></tr>
+  <tr><td><code>--tag sp3</code></td><td>Kit name becomes <code>jupiter_byte_sp3_build</code>; the tag is carried into every stamp and the image name.</td></tr>
+  <tr><td><code>--work</code></td><td>Default <code>/mnt/onetb/scratch/qpsk-build-trees/work_sp3</code>. Holds <code>STAMP.hdl</code>, <code>STAMP.gates</code>, <code>STAMP.vivado</code>, the fetched log and the finished image.</td></tr>
+  <tr><td><code>--regen-parent</code></td><td>Default <code>/mnt/onetb/scratch/qpsk-build-trees/regen11</code>. The fresh kit is created under it.</td></tr>
+  <tr><td><code>--remote-base</code></td><td>Where the kit lands on <code>hdl-dev-2</code>. Use the second disk; the home filesystem there is nearly full.</td></tr>
+  <tr><td><code>--from</code>, <code>--stop-after</code></td><td>Select a stage range. A later stage refuses to run unless the previous stamp carries the same <code>model_tree_sha</code>.</td></tr>
+  <tr><td><code>--dry</code></td><td>Runs the script with a PATH shim that turns every <code>rsync</code> into <code>rsync -n</code>, because the kit's own build script deletes on the remote before its dry gate.</td></tr>
+  <tr><td><code>WNS_FLOOR=0.005</code></td><td>Gate 2 floor in nanoseconds on the modem clock <code>axi_adrv9001_adc_1_clk</code>.</td></tr>
+</table>
+<p>Each stage writes <code>&lt;work&gt;/STAMP.&lt;stage&gt;</code> with the fields <code>stage= tag= model_tree_sha= git= when= result=</code>. The <code>model_tree_sha</code> is a sha256 over the sorted list of generated Verilog files in the kit, so a regenerated model invalidates every later stamp automatically.</p>
+
+<h2 id="model"><span class="num">2</span>Simulink model build flow</h2>
+<h3>The two models</h3>
+<p><code>modem/dev/commhdlQPSKTxRx.slx</code> is the source model, derived from the MathWorks <code>commhdlQPSKTxRx</code> example by way of the Analog Devices TransceiverToolbox. It is edited in place by the overlay scripts. <code>modem/dev/commhdlQPSKTxRxLoopback.slx</code> is the design under test. It is cloned from the source model on every assemble, and its HDL subsystem is <code>commhdlQPSKTxRxLoopback/TxRxComposite</code>. Both <code>.slx</code> files are mutable as-built artefacts, which is why they show as modified after a build.</p>
+
+<h3>Driver chain</h3>
+<ol>
+  <li><code>modem/build_hdl.sh &lt;regen-parent&gt; --kit-name jupiter_byte_&lt;tag&gt;_build --complete-bd</code> copies <code>modem/</code> into a fresh kit with <code>rsync</code> (excluding <code>hdl_prj_*</code>, <code>slprj</code>, <code>s1_rtl*</code>) and rewrites the kit path in every <code>.m</code> file with <code>sed</code>.</li>
+  <li>It exports the environment that is the image configuration (next table) and runs <code>timeout 5400 matlab -batch build_variant_byte</code>.</li>
+  <li><code>modem/dev/build_variant_byte.m</code> runs the TransceiverToolbox <code>setup.m</code>, puts the kit last on the MATLAB path so its parameters win, calls <code>hdlsetuptoolpath</code> for the local Vivado, deletes <code>hdl_prj_jupiter_composite</code> and <code>slprj</code> to defeat smart-build caching, then runs <code>assemble_jupiter_240k5_byte.m</code> followed by <code>hdlworkflow_loopback.m</code>.</li>
+</ol>
+
+<div class="panel amber">
+<p><strong>The environment is the image configuration.</strong> <code>build_hdl.sh</code> exports:</p>
+<pre><code>QPSK_LEAN=1  QPSK_FRAME=f1536  QPSK_SPS=4  QPSK_BEATFIX=1  QPSK_BEATOBS=1
+QPSK_FRAMESTAT=1  QPSK_RXFIX=1  QPSK_TXFIX="${QPSK_TXFIX-1}"</code></pre>
+<p><code>modem/common/model/frame_config_k5.m</code> is the single source of truth for frame geometry and defaults to the older <code>k5</code> frame at 8 samples per symbol. Running the MATLAB entry point without these exports silently builds a different rung. <code>QPSK_RXFIX</code> cannot be turned off by the caller; <code>QPSK_TXFIX=</code> (empty) is the documented way to build the no-TX-fix discriminating image.</p>
+</div>
+
+<h3>Overlay stack inside assemble</h3>
+<p><code>modem/dev/assemble_jupiter_240k5_byte.m</code> is 650 lines of ordered edits to the model, followed by hard gates. The file name is historical; the deployed configuration is the f1536 frame at 4 samples per symbol.</p>
+<table>
+  <tr><th>Phase</th><th>Scripts</th><th>What changes</th></tr>
+  <tr><td>0</td><td class="wrap"><code>patch_hdlworkflow_counters.m</code>, <code>_taps.m</code>, <code>_forensic.m</code>, <code>_loopgain.m</code>, <code>simulink/beatila/patch_hdlworkflow_beatfix.m</code>, <code>rxfix/patch_hdlworkflow_rxfix.m</code></td><td>Idempotent text patches to <code>hdlworkflow_loopback.m</code> that add AXI4-Lite register mappings for each instrument or fix.</td></tr>
+  <tr><td>0b</td><td class="wrap"><code>rate_240k_overlay.m</code>, <code>ss8_fix_overlay.m</code>, <code>timing_hardening_overlay.m</code>, <code>agc_gain_range_overlay.m</code></td><td>Edits to the source model: sample times expressed as <code>1/(Rsym*SamplesPerSymbol)</code>, symbol-sync fixes, pipeline registers, AGC range.</td></tr>
+  <tr><td>1</td><td class="wrap"><code>build_composite_local.m</code></td><td>Clones the source model to the loopback model, creates <code>TxRxComposite</code>, duplicates Transmitter and Receiver, adds the RX source mux and rate transitions, deletes simulation-only blocks, sets the HDL subsystem.</td></tr>
+  <tr><td>1.5 to 2.12</td><td class="wrap"><code>msggen_rom_overlay_k5.m</code>, <code>variant_pre.m</code>, <code>fec_insert_overlay_rxonly_k5.m</code>, FEC counter/skip/capture overlays, <code>taps_240k5_overlay.m</code>, <code>rx_framing_overlay_k5.m</code>, <code>adc_forensic_overlay.m</code>, <code>iq_debug_tap_overlay.m</code>, canary and loop-tune overlays</td><td>Message ROM, receive-side FEC, debug taps, framing, ADC forensic capture, canary registers.</td></tr>
+  <tr><td>2.13 to 2.16</td><td class="wrap"><code>byte_tx_overlay_k5.m</code>, <code>fec_tx_encoder_overlay_k5.m</code>, <code>byte_rx_overlay_k5.m</code>, <code>byte_plumbing_overlay_k5.m</code>, <code>byte_rxfifo_overlay.m</code></td><td>The byte plane: 64-bit byte DMA ports both ways, TX encoder, and the retarget to the reference design <code>JUPITER (RX &amp; TX, BYTE DMA)</code> through <code>AnalogDevices.jupiter.plugin_rd_rxtx_byte</code>.</td></tr>
+  <tr><td>2.17 to 2.21</td><td class="wrap"><code>resolver_lookback_fix.m</code>, <code>loop_gain_axi_overlay.m</code>, <code>framestat_overlay.m</code>, beatobs/beatfix overlays, <code>rxfix/rxfix_w1_overlay.m</code>, <code>rxfix_steer_overlay.m</code>, <code>rxfix_r1_overlay.m</code>, <code>rxfix_bs_overlay.m</code>, <code>rxfix_pad_overlay.m</code>, <code>rxfix/txfix_f3_overlay.m</code></td><td>Environment-gated fixes. In the sp3 chain these model overlays replace the netlist injections of the sp2 chain (section 3).</td></tr>
+</table>
+<p>After the overlays the script writes a description string into the model (<code>frame=… variant=… build=…</code>), saves it, and runs the pre-synthesis gates. The gates assert that the kit parameters are active (samples per symbol matches the frame config), that the symbol rate times samples per symbol equals the 15.36 MHz model rail, and that the CFO change-detect threshold is the expected value.</p>
+
+<h3>HDL Workflow Advisor configuration</h3>
+<p><code>modem/dev/hdlworkflow_loopback.m</code> is the exported Workflow Advisor script (R2025b). The fixed settings that matter:</p>
+<table>
+  <tr><th>Setting</th><th>Value</th></tr>
+  <tr><td>Reference design</td><td><code>JUPITER (RX &amp; TX, BYTE DMA)</code>, project <code>jupiter_sdr</code>, design <code>rxtx</code>, four 16-bit inputs, one valid</td></tr>
+  <tr><td>Device</td><td>Zynq UltraScale+ <code>xczu3eg-sfva625-2-e</code>, platform <code>AnalogDevices JUPITER</code></td></tr>
+  <tr><td>Language, workflow</td><td>Verilog, IP Core Generation, project folder <code>hdl_prj_jupiter_composite</code></td></tr>
+  <tr><td>Synthesis tool</td><td>Xilinx Vivado 2025.1, unsupported-version override on, IP caching off</td></tr>
+  <tr><td>Custom build script</td><td><code>CI/scripts/adi_build.tcl</code> from the TransceiverToolbox; <code>build_env_jupiter.sh</code> at the repository root sets its <code>ADI_*</code> job and cache variables</td></tr>
+  <tr><td>Run order</td><td>Stage 1 generates RTL and packages the IP core; Stage 2 creates the project and software interface and builds. Program-device is off.</td></tr>
+</table>
+
+<h3>Port to interface map</h3>
+<table>
+  <tr><th>Model port</th><th>Reference design interface</th></tr>
+  <tr><td><code>adc_dataInI</code>, <code>adc_dataInQ</code>, <code>adc_validIn</code></td><td>ADRV9002 ADC Data I0/Q0, IP Valid Rx Data IN</td></tr>
+  <tr><td><code>tx_dataOutI</code>, <code>tx_dataOutQ</code>, <code>tx_validOut</code></td><td>ADRV9002 DAC Data I0/Q0, IP Load Tx Data OUT</td></tr>
+  <tr><td><code>host_txI</code>, <code>host_txQ</code>, <code>host_txValid</code></td><td>IP Data 0/1 IN, IP Valid Tx Data IN</td></tr>
+  <tr><td><code>debugI1/Q1</code>, <code>debugI/Q</code>, <code>debugValid</code></td><td>IP Data 0/1 OUT, IP Data 2/3 OUT, IP Data Valid OUT (the RX capture DMA)</td></tr>
+  <tr><td><code>byte_data</code>, <code>byte_valid</code>, <code>byte_first</code>, <code>byte_ready</code></td><td>Byte Data IN [0:63], Byte Valid IN, Byte First IN, Byte Ready OUT</td></tr>
+  <tr><td><code>byte_rx_data</code>, <code>byte_rx_valid</code>, <code>byte_rx_last</code>, <code>byte_rx_user</code>, <code>byte_rx_ready</code></td><td>Byte Data OUT [0:63], Byte Valid/Last/User OUT, Byte Ready IN</td></tr>
+  <tr><td>AXI4-Lite registers</td><td>Modem base <code>0x9D000000</code>. Counters at 0x100 to 0x108, source selects 0x114/0x118, TX data source 0x158, fix control <code>fixctl</code> at 0x208, RXFIX witness words 0x214 to 0x25C. The host-side truth for 0x208 and up is <code>modem/regmap/regmap.toml</code>.</td></tr>
+</table>
+<p>The platform DMAs come from the plugin, not the model: <code>rx_byte_dma</code> at 0x9D200000, <code>tx_byte_dma</code> at 0x9D100000, <code>byte_ctrl_gpio</code> at 0x9D300000.</p>
+
+<h3>What HDL Coder leaves behind</h3>
+<ul>
+  <li><code>hdl_prj_jupiter_composite/hdlsrc/commhdlQPSKTxRxLoopback/</code>: generated Verilog, every module prefixed <code>TxRxCompo_ip_src_</code>, plus the generated model and the resource report.</li>
+  <li><code>hdl_prj_jupiter_composite/ipcore/TxRxCompo_ip_v1_0.zip</code>: the packaged IP core. Every later netlist edit must patch the loose Verilog, the unpacked ipcore copy and the zip members together.</li>
+  <li><code>hdl_prj_jupiter_composite/vivado_ip_prj/vivado_prj.xpr</code> and <code>system.bd</code>: the ADI reference project, which must already contain the <code>byte_breakout</code> cell.</li>
+</ul>
+<div class="panel blue">
+<p><strong>The Create Project task fails by design.</strong> The ADI <code>add_ip</code> step passes the ipcore directory where Vivado wants the zip path, so the MATLAB batch exits non-zero. <code>build_hdl.sh</code> ignores the exit code and gates on the three artefacts above instead. The block design is then completed by the repository's own Tcl (section 3).</p>
+</div>
+<p>The TransceiverToolbox checkout at <code>/home/tcollins/dev/qpsk_ai/TransceiverToolbox</code> (commit <code>11f5cf94</code>) carries the Analog Devices HDL tree vendored inside it. It is a read-only donor: nothing in this repository edits it, and it is not a git submodule.</p>
+
+<h2 id="postgen"><span class="num">3</span>Changes made after HDL Coder</h2>
+<p>Steps 4 to 7 of <code>build_hdl.sh</code> take the generated tree and turn it into a kit that can be synthesised without MATLAB. Everything here is scripted and leaves a token in the log.</p>
+<table>
+  <tr><th>Step</th><th>Tool and file</th><th>What changes</th><th>Proof</th></tr>
+  <tr><td>4a</td><td class="wrap"><code>modem/common/rxfifo/rxfifo_inject.sh &lt;kit&gt; 4096</code></td><td>Replaces HDL Coder's 64-deep register <code>ByteRxFifo</code> with the hand-written block-RAM module <code>modem/common/rxfifo/ByteRxFifo.v</code> in every loose, ipcore and zip copy. This is a tracked design source, not an instrument.</td><td><span class="token">RXFIFO_INJECT_OK files+zips=N</span></td></tr>
+  <tr><td>4</td><td class="wrap"><code>instruments/txcap/txcap_inject.py</code>, then <code>TXMARK=1 instruments/ddrcap/ddrcap_inject.py</code>, then <code>instruments/ddrcap2/ddrcap2_inject.py</code></td><td>Python netlist injectors that add the TX frame-start port and the DDR capture instrument taps. Each patches the Verilog, both zip members and <code>component.xml</code>. Order matters: txcap creates the port that ddrcap anchors on.</td><td>Each returns 0; a failure is fatal.</td></tr>
+  <tr><td>5</td><td class="wrap">One local Vivado session, <code>complete_bd_run.tcl</code>, sourcing <code>complete_byte_bd.tcl</code>, <code>instruments/ddrcap/ddrcap_bd.tcl</code>, <code>seqbist_bd.tcl</code></td><td>Adds the ipcore zip to the catalog, instantiates <code>TxRxCompo_ip_0</code> at 0x9D000000 on <code>axi_adrv9001/adc_1_clk</code>, wires ADC/DAC data and valids through the sync cells, asserts the byte breakout and byte DMAs exist, sets the RX byte DMA cyclic, wires the byte DMA interrupts (<code>wire_byte_irqs.tcl</code> prints <code>BYTE_IRQ_MAP</code> with the two interrupt cells the device tree needs), adds constraints, validates. Then repoints the rx2 DMA at the DDR capture ports and adds the sequence-BIST traffic generator, checker and three GPIO blocks at 0x9D400000 to 0x9D450000 (skip with <code>SP3_SKIP_SEQBIST=1</code>).</td><td class="wrap"><span class="token">BYTE_WIRE_OK</span> <span class="token">VALIDATE_OK</span> <span class="token">COMPLETE_BYTE_BD_DONE</span> <span class="token">DDRCAP_BD_WIRE_OK</span> <span class="token">SEQBIST_WIRE_OK</span> <span class="token">COMPLETE_BD_RUN_DONE</span>, then <span class="token">BUILD_HDL_BD_OK</span>. The script also fails if the <code>.xpr</code> contains an absolute file path, which would break on the remote host.</td></tr>
+  <tr><td>6</td><td class="wrap"><code>modem/vivado/txfix_build.sh.tmpl</code>, <code>txfix_build.tcl.tmpl</code>, <code>modem/instruments/txclk/pre_synth.tcl</code>, <code>txclk_bd.tcl</code></td><td>Kit assembly. The templates become <code>build_txfix.sh</code> and <code>build_txfix.tcl</code> in the kit. The txclk pair is the deployed clock fix: at synthesis time it sets <code>USE_RX_CLK_FOR_TX1=1</code> on <code>axi_adrv9001</code> so the DAC path runs on the modem's ADC clock and the modem-to-DAC crossing becomes a same-clock path (skip with <code>SP3_SKIP_TXCLK=1</code>). Stale <code>txcdc</code> files from the superseded FIFO attempt are removed. <code>TXFIX_VARIANT</code> and <code>SEQBIST_VARIANT</code> stamps are written.</td><td><span class="token">BUILD_HDL_KIT_OK</span></td></tr>
+  <tr><td>7</td><td class="wrap">grep checks in <code>build_hdl.sh</code></td><td>Confirms the overlay-produced modules exist in the generated tree (<code>RxW1Census</code>, <code>RxSteer</code>, <code>PdPopIndex</code>, <code>BsSeamCensus</code>, <code>FixCtlDec</code>, <code>padCount</code>, <code>fullRAM</code>) and that the byte serialiser's ready path was padded by exactly four registers. Optional <code>--diff-bank</code> diffs the RTL against the banked tree.</td><td><span class="token">MODEL_OVERLAYS_OK</span> <span class="token">BS_READY_PAD_OK</span></td></tr>
+</table>
+
+<div class="panel lilac">
+<p><strong>The sp2 chain, kept for rollback rebuilds.</strong> Before sp3, the fixes now applied as model overlays were injected into a banked, already-generated netlist. <code>modem/fixes/apply_fixes.py --manifest --role A|B</code> reads <code>modem/fixes/fixes.toml</code>, verifies the banked base tree <code>jupiter_byte_ddrcap2_build</code> by sha256, then runs the TX fix injector (F3), the sequence-BIST kit patcher and the RX fix injector (<code>rxfix_inject.py</code>, variants W1, R4B, R4D, R1, BS, PAD) in order. Role A is board 148 with W1 R4B BS PAD; role B is board 146 with W1 R4D R1. That chain still rebuilds the shipped rollback pair and must not be edited casually: some strings it emits are byte-for-byte in deployed silicon.</p>
+</div>
+
+<h2 id="gate1"><span class="num">4</span>Simulation gate (stage gates, Gate 1)</h2>
+<p>The generated tree is proven equivalent to the banked reference before any synthesis time is spent.</p>
+<ol>
+  <li><code>modem/rtl_sim/make_sro_trees.sh --from-regen &lt;kit&gt;</code> builds a simulation tree, stripping the <code>TxRxCompo_ip_src_</code> prefixes and emitting model wrappers.</li>
+  <li><code>modem/rtl_sim/tree_marker.sh &lt;tree&gt; &lt;name&gt;</code> for W1, R4B, R4DR1, BS, PAD and F3 must each report the fix came from the model, not from an injector.</li>
+  <li><code>modem/gates/run_gates.sh --legs modem/gates/model_matrix.legs</code> runs each leg of the table as its own <code>systemd-run --user</code> unit under Verilator 5.020, scores with <code>score_matrix.py</code> against <code>reference_loss.toml</code>, and reuses content-keyed <code>.ok</code> files. It first runs <code>base_tree.sh verify-bank</code> against <code>modem/gates/bank.sha256</code>.</li>
+</ol>
+<p>The stage passes only on <span class="token">GATES_DONE … fail=0</span>. It refuses to start while any <code>sp2-gate-*</code> unit is running, because the tree and object directories are shared. Skipping the stage with <code>--from vivado</code> prints an explicit warning that the build is ungated.</p>
+
+<h2 id="vivado"><span class="num">5</span>Remote synthesis, implementation and bootgen (stage vivado, Gate 2)</h2>
+<h3>Launch from the workstation</h3>
+<p><code>build_image.sh</code> runs the kit's <code>build_txfix.sh</code> with <code>IMPL_STRATEGY=explore</code>. That script:</p>
+<ul>
+  <li>checks the kit name matches the accepted patterns and that <code>TXFIX_VARIANT</code> exists;</li>
+  <li>checks the remote build base has at least 25 GB free and that no other <code>txfix-build-*</code> or <code>ddrcap-build-*</code> unit is active (override with <code>ALLOW_CONCURRENT=1</code>);</li>
+  <li>copies the kit with <code>rsync -a --delete</code>, excluding old runs, caches and any previous <code>BOOT.BIN</code>;</li>
+  <li>launches the build through ssh as a transient unit and returns immediately:</li>
+</ul>
+<pre><code>ssh hdl-dev-2 ... bash -s &lt;&lt;'REMOTE'
+export PATH=/opt/Xilinx/2025.1/Vivado/bin:/usr/bin:/bin
+systemd-run --user --unit="$UNIT" --collect --working-directory="$Z" \
+  bash -c "timeout 14400 vivado -mode batch -notrace -source $REMOTE_DIR/build_txfix.tcl \
+           &gt; $REMOTE_DIR/build_txfix_vivado.log 2&gt;&amp;1"
+REMOTE</code></pre>
+<p><code>build_image.sh</code> then polls <code>systemctl --user is-active</code> on the remote once a minute (four-hour cap), fetches the log, the routed timing reports and <code>vivado_ip_prj/boot/BOOT.BIN</code> with rsync, and requires <span class="token">TXFIX_BUILD_DONE</span> in the log.</p>
+
+<h3>What runs on hdl-dev-2</h3>
+<p><code>build_txfix.tcl</code>, with the current directory set to the Vivado project:</p>
+<ol>
+  <li>Opens the project, rebuilds the IP catalog, then sources <code>pre_synth.tcl</code> if the kit has one (<span class="token">PRE_SYNTH_HOOK_OK</span>). This is where the txclk block-design change is applied.</li>
+  <li>Generates the block design, runs synthesis with the requested job count.</li>
+  <li>Sources <code>timing_gate.tcl</code>: opens the synthesised design and reports worst negative slack on paths into the modem IP only (<span class="token">TIMING_GATE_WNS</span>). It fails only below a loose floor, default minus 1 ns, so it catches broken designs rather than tight ones.</li>
+  <li>Runs implementation. With <code>IMPL_STRATEGY=explore</code> the place directive is <code>ExtraTimingOpt</code> and physical optimisation, routing and post-route physical optimisation use <code>AggressiveExplore</code>.</li>
+  <li>Reads the routed worst negative slack; if it is negative the script prints <span class="token fail">TXFIX_ROUTED_TIMING_FAIL</span> and stops before bootgen.</li>
+  <li>Copies <code>impl_1/system_top.bit</code> and the boot components from the vendored ADI tree, then packages the boot image:</li>
+</ol>
+<pre><code>set b projects/common/boot/jupiter_sdr
+foreach f {u-boot.elf zynq.bif fsbl.elf bl31.elf pmufw.elf regs.init} { file copy $b/$f boot/$f }
+cd boot; exec bootgen -arch zynqmp -image zynq.bif -o BOOT.BIN -w</code></pre>
+<p>There is no XSA or hardware hand-off export. The first-stage boot loader, PMU firmware, ARM trusted firmware and U-Boot are the pre-built binaries shipped in the reference design.</p>
+
+<h3>Gate 2: the modem clock</h3>
+<p>Back on the workstation, <code>python3 modem/gates/modem_wns.py &lt;impl_1 reports&gt; --clock axi_adrv9001_adc_1_clk --min 0.005</code> reads the intra-clock table of the post-route physical-optimisation timing summary and prints <span class="token">MODEM_CLK_WNS clock= wns= tns= failing= total=</span>. Below the floor the build stops with <span class="token fail">BUILD_IMAGE_GATE2_FAIL</span>; the rule is to record it and not to retry with other strategies. On pass the image is copied to <code>&lt;work&gt;/BOOT.BIN.jupiter.&lt;tag&gt;.&lt;md5&gt;</code> and <span class="token">BUILD_IMAGE_DONE</span> is printed.</p>
+<table>
+  <tr><th>Image</th><th>Modem-clock WNS (ns)</th></tr>
+  <tr><td>rxfixpad (sp2 base)</td><td>0.105</td></tr>
+  <tr><td>sp2A / sp2B</td><td>0.447 / 0.785</td></tr>
+  <tr><td>sp3</td><td>0.785</td></tr>
+  <tr><td>sp3txclk (deployed)</td><td>1.392</td></tr>
+</table>
+<p>Two other slack numbers appear in the log and are not Gate 2: the pre-implementation figure in the <code>TXFIX_BUILD_DONE wns=</code> line, and the whole-design routed figure. Only the intra-clock post-route row for the modem clock is the gate.</p>
+
+<h2 id="image"><span class="num">6</span>Image bank, kernel, device tree and deploy (Gate 3)</h2>
+<h3>Bank</h3>
+<p>Finished images are copied by hand into <code>images/</code> as <code>BOOT.BIN.jupiter.&lt;tag&gt;.&lt;md5&gt;</code> (one file per image, no aliases; the flash rails resolve <code>FLASH_MD5</code> through <code>images/MD5SUMS</code>). <code>images/MD5SUMS</code> is authoritative, <code>images/README.md</code> holds one provenance row per image, and <code>images/CURRENT.txt</code> maps role A (board 148) and role B (board 146) to the image each should boot. The deployed pair is <code>sp3prod b68dbf1d9321</code> on both roles (2026-09-16); <code>sp3txclk cae8c4fdac09</code> is banked as the rollback.</p>
+
+<h3>Kernel and device tree</h3>
+<ul>
+  <li><strong>Kernel:</strong> <code>images/Image.6.12.77-uio.&lt;sha&gt;.gz</code>, built once from the Analog Devices <code>xlnx/release/v6.12.y-2026r1</code> branch with <code>modem/boot/kernel-arm64-cmdline-extend.patch</code>, generic UIO built in and the UIO match id on the kernel command line. It is cross-compiled with the Xilinx 2025.1 <code>aarch64-linux-gnu-</code> toolchain; the recipe lives in the Sphinx page on building and flashing, not in a script.</li>
+  <li><strong>Device tree:</strong> <code>modem/boot/qpsk_byte_uio.dtso</code> adds three generic-UIO nodes for the byte DMAs and control GPIO and a 2 MB carve. <code>ops/deploy_dtb.sh build &lt;tx&gt; &lt;rx&gt;</code> substitutes the two interrupt cells reported by <code>BYTE_IRQ_MAP</code>, compiles with <code>dtc -@</code>, merges into the pristine base tree with <code>fdtoverlay</code>, and <code>check</code> round-trips the result through <code>dtc</code> and asserts the nodes with <code>fdtget</code>.</li>
+</ul>
+
+<h3>Deploy order for a fresh board</h3>
+<ol>
+  <li><code>ops/deploy_kernel.sh &lt;ip&gt;</code></li>
+  <li><code>ops/deploy_dtb.sh &lt;ip&gt;</code></li>
+  <li><code>ops/deploy_image.sh &lt;ip&gt; A|B</code> (reads <code>images/CURRENT.txt</code>)</li>
+  <li><code>ops/provision.sh &lt;ip&gt;</code>: copies the host application sources and profiles, builds the host app natively on the board with plain <code>gcc</code> (not make), installs the lock watchdog.</li>
+</ol>
+<p>All four use <code>ops/anyssh.sh</code> and <code>ops/askpass.sh</code> (password auth through <code>SSH_ASKPASS</code>), stage files under <code>/root</code>, check size and magic bytes, back up <code>/boot</code>, reboot and wait on ping. Plain <code>scp</code> to these boards writes zero-byte files, which is why the helper exists.</p>
+
+<h3>Flash rails</h3>
+<p>On the live rig, images go on through <code>ops/flash/flash_148_txfix.sh</code> and <code>ops/flash/flash_146_txfix.sh</code>, launched with <code>ops/launch_rig_unit.sh</code> so each runs as a transient unit from a frozen copy of the script. A rail checks preconditions and the on-board backup, flashes, reads back the md5, runs the arm gate (148 only) or the both-board bring-up (146), and on any failure rolls back to the <code>.bak</code> image and ends. Gate 3 is then the credited packet-error-rate windows scored by <code>ops/accept_analyze.py</code> with lost frames in the denominator.</p>
+
+<h3>Host software</h3>
+<p><code>host/Makefile</code> builds <code>qpsk_tun</code>, <code>qpsk_capture</code>, <code>qpsk_perf</code> and the <code>modem_status</code> ncurses status tool with <code>gcc</code>. Unit tests run on the x86 workstation with <code>make -C host test</code>. On the boards the tools are compiled natively (148 is arm64, 146 is armhf) inside the on-board host app directory that <code>provision.sh</code> creates. The register header <code>host/qpsk_fixregs.h</code> is generated from <code>modem/regmap/regmap.toml</code> by <code>modem/regmap/gen_regmap.py</code>; <code>--check</code> is a CI gate.</p>
+
+<h2 id="tools"><span class="num">7</span>Tools besides Simulink, MATLAB and Vivado</h2>
+<table>
+  <tr><th>Tool</th><th>Version or pin</th><th>Used by</th><th>Step</th></tr>
+  <tr><td>bash</td><td>system</td><td class="wrap"><code>modem/build_image.sh</code>, <code>build_hdl.sh</code>, <code>rxfifo_inject.sh</code>, <code>gates/run_gates.sh</code>, <code>vivado/txfix_build.sh.tmpl</code>, every <code>ops/</code> script</td><td>Orchestration throughout</td></tr>
+  <tr><td>Python 3</td><td>3.11 or newer for <code>tomllib</code>; numpy only in <code>ops/</code> scoring</td><td class="wrap"><code>instruments/*/*_inject.py</code>, <code>gates/modem_wns.py</code>, <code>gates/score_matrix.py</code>, <code>regmap/gen_regmap.py</code>, <code>fixes/apply_fixes.py</code>, <code>ops/accept_analyze.py</code></td><td>Netlist edits, Gate 1 scoring, Gate 2, register header, Gate 3 scoring</td></tr>
+  <tr><td>pytest</td><td>system</td><td class="wrap"><code>modem/tests/</code>, <code>modem/gates/tests/</code>, <code>modem/regmap/tests/</code>, <code>ops/tests/</code></td><td>Tests for the build scripts themselves (fake <code>systemctl</code> on PATH)</td></tr>
+  <tr><td>Verilator</td><td>5.020</td><td class="wrap"><code>modem/rtl_sim/build_*.sh</code>, <code>modem/gates/*.legs</code></td><td>Gate 1 simulation</td></tr>
+  <tr><td>Icarus Verilog (<code>iverilog</code>, <code>vvp</code>)</td><td>system</td><td class="wrap"><code>modem/dev/run_netlist_gates.sh</code>, <code>modem/rtl_sim/run_tgen_tb.sh</code></td><td>ROM-path and test-bench gates</td></tr>
+  <tr><td>bootgen</td><td>Xilinx 2025.1</td><td class="wrap"><code>modem/vivado/txfix_build.tcl.tmpl</code>, <code>modem/legacy_builds/complete_and_gather.tcl</code></td><td>Boot image packaging on hdl-dev-2</td></tr>
+  <tr><td>dtc, fdtoverlay, fdtget</td><td>system</td><td class="wrap"><code>ops/deploy_dtb.sh</code>, <code>modem/boot/qpsk_byte_uio.dtso</code></td><td>Device tree overlay and validation</td></tr>
+  <tr><td>aarch64 cross gcc</td><td>Xilinx 2025.1 toolchain</td><td class="wrap">Kernel recipe in the Sphinx build-and-flash page, <code>modem/boot/kernel-arm64-cmdline-extend.patch</code></td><td>One-off kernel build</td></tr>
+  <tr><td>gcc, ncurses</td><td>on-board packages</td><td class="wrap"><code>host/Makefile</code>, <code>ops/provision.sh</code></td><td>Host application, native on each board</td></tr>
+  <tr><td>rsync</td><td>system</td><td class="wrap"><code>build_hdl.sh</code>, <code>build_image.sh</code>, <code>txfix_build.sh.tmpl</code>, <code>fixes/base_tree.sh</code></td><td>Kit copy, remote sync, artefact fetch</td></tr>
+  <tr><td>ssh, scp with <code>SSH_ASKPASS</code></td><td>system</td><td class="wrap"><code>ops/anyssh.sh</code>, <code>ops/askpass.sh</code>, the deploy scripts; key auth to hdl-dev-2</td><td>Board transport and remote launch</td></tr>
+  <tr><td>systemd (<code>systemd-run --user</code>)</td><td>system</td><td class="wrap"><code>build_image.sh</code>, <code>run_gates.sh</code>, <code>txfix_build.sh.tmpl</code>, <code>ops/launch_rig_unit.sh</code></td><td>Every long job on both hosts; concurrency guards via <code>systemctl --user list-units</code></td></tr>
+  <tr><td>md5sum, sha256sum</td><td>coreutils</td><td class="wrap"><code>images/MD5SUMS</code>, <code>gates/bank.sha256</code>, <code>fixes.toml</code> base manifest, deploy readback</td><td>Identity of every image and banked tree</td></tr>
+  <tr><td>sed, unzip, zip, strings, gunzip, timeout, setsid</td><td>system</td><td class="wrap">Kit path repoint, ipcore zip patching and verification, kernel unpack, bounded board calls</td><td>Throughout</td></tr>
+  <tr><td>libiio CLI, busybox devmem, debugfs register access</td><td>on-board</td><td class="wrap"><code>ops/bringup_r2r3.sh</code>, <code>ops/measure_ber.sh</code>, <code>ops/health_probe_reset_aware.sh</code></td><td>Bring-up and measurement, not the image build</td></tr>
+  <tr><td>git hooks and gates</td><td>repo</td><td class="wrap"><code>tools/precommit_size_guard.sh</code> (pre-commit), <code>tools/check_paths.sh</code> (CI)</td><td>Repository hygiene</td></tr>
+  <tr><td>Sphinx with adi-doctools</td><td>sphinx 9.1.0, adi-doctools 0.4.41</td><td class="wrap"><code>.github/workflows/docs.yml</code>, <code>docs/conf.py</code></td><td>Publishes this page and the docs to GitHub Pages</td></tr>
+</table>
+<p>Not used anywhere in the chain: Docker or other containers, CMake, PetaLinux or Yocto, git submodules, clang-format. There is no continuous-integration HDL build; the only workflow builds the documentation and runs the path and register-map checks.</p>
+
+<h2 id="gates"><span class="num">8</span>Gate summary</h2>
+<table>
+  <tr><th>Gate</th><th>Where</th><th>Pass</th><th>Fail and what to do</th></tr>
+  <tr><td>hdl post-checks</td><td class="wrap"><code>build_hdl.sh</code> steps 5 to 7</td><td class="wrap"><span class="token">BUILD_HDL_BD_OK</span> <span class="token">BUILD_HDL_KIT_OK</span> <span class="token">MODEL_OVERLAYS_OK</span> <span class="token">BS_READY_PAD_OK</span></td><td class="wrap"><span class="token fail">BUILD_HDL_BD_FAIL missing:…</span> <span class="token fail">MODEL_OVERLAYS_MISSING</span>. Inspect the Vivado log in the kit; usually a missing token from a Tcl step.</td></tr>
+  <tr><td>Gate 1, simulation</td><td class="wrap"><code>run_gates.sh --legs model_matrix.legs</code></td><td><span class="token">GATES_DONE … fail=0</span></td><td class="wrap"><span class="token fail">GATE_FAIL</span> then <span class="token fail">BUILD_IMAGE_GATES_FAIL</span>. Check <code>tree_marker.sh</code> first: a leg that scores as injector rather than model means the overlay did not land.</td></tr>
+  <tr><td>Pre-implementation</td><td class="wrap"><code>timing_gate.tcl</code></td><td><span class="token">TIMING_GATE_PASS</span></td><td class="wrap"><span class="token fail">TIMING_GATE_FAIL</span>, Vivado exits 1. Only fires below minus 1 ns; treat as a broken design.</td></tr>
+  <tr><td>Routed whole design</td><td class="wrap"><code>build_txfix.tcl</code></td><td><span class="token">TXFIX_ROUTED_WNS wns&gt;=0</span> and bootgen runs</td><td class="wrap"><span class="token fail">TXFIX_ROUTED_TIMING_FAIL</span>, no <code>BOOT.BIN</code>.</td></tr>
+  <tr><td>Gate 2, modem clock</td><td class="wrap"><code>modem_wns.py --min 0.005</code></td><td><span class="token">BUILD_IMAGE_WNS_OK</span></td><td class="wrap"><span class="token fail">BUILD_IMAGE_GATE2_FAIL</span>. Stop and record; do not retry with other implementation strategies. Exit 2 means the clock row was missing, exit 3 no report.</td></tr>
+  <tr><td>Gate 3, silicon</td><td class="wrap">Flash rails and <code>ops/capture_r3.sh</code> windows</td><td class="wrap">Arm gates green and credited packet-error-rate windows</td><td class="wrap">Wedge or reset storm: the rail rolls back to <code>.bak</code> and the lane ends.</td></tr>
+</table>
+
+<h2 id="traps"><span class="num">9</span>Known traps</h2>
+<ul>
+  <li>Running the MATLAB entry point without the <code>QPSK_*</code> exports builds the k5 rung at 8 samples per symbol. Always go through <code>build_hdl.sh</code>.</li>
+  <li>The MATLAB batch exits non-zero at Create Project on every successful build. The artefact gate is the real check.</li>
+  <li><code>build_txfix.sh --dry</code> is positional. Setting <code>DRY=1</code> in the environment launches a real two-hour build. Other rig scripts have the opposite default, so read each script's header.</li>
+  <li>The <code>wns=</code> value in <code>TXFIX_BUILD_DONE</code> is the pre-implementation number. Gate 2 is only the <code>MODEM_CLK_WNS</code> line.</li>
+  <li>The <code>.slx</code> files show as modified after any assemble. That is expected; they are as-built artefacts.</li>
+  <li>A netlist edit that touches only the loose Verilog and not both zip members produces a kit whose synthesised design silently lacks the change. Every injector verifies the zip with <code>unzip -p | strings | grep</code>.</li>
+  <li><code>arm148_mode1.sh</code> is for board 148 only; the same arm hangs board 146.</li>
+  <li>Never edit a script that a live unit is running. <code>launch_rig_unit.sh</code> runs a frozen copy for this reason.</li>
+  <li>The home filesystem on hdl-dev-2 is nearly full. Build under <code>/mnt/disk2/scratch/qpsk-builds</code>.</li>
+</ul>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+== GATE seqbist_unit/run_unit.sh  key=seqbist_unit_run_unit  role=A  ts=1789041892
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/seqbist_unit_run_unit.legs
+== work /mnt/onetb/scratch/sp2_gates/work/seqbist_unit_run_unit   SRO=/mnt/onetb/scratch/two_jup_untracked_20260909/comb/sro_sim
+Running as unit: sp2-gate-seqbist_unit_run_unit-unit-1789041892.service; invocation ID: 28035bd7a26b497ca2033dd92b633496
+LEG_PASS unit  00:00:30
+GATE_LEGS seqbist_unit/run_unit.sh pass=1 fail=0 wall=00:00:30

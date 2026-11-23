@@ -1,0 +1,49 @@
+# build_sro_rxfix4dr1.legs -- RXFIX_S1 (R4D + R1) sim gate: role B's shipped variant.
+# Ledger: docs/evidence/comb/RXFIX_S1_SIM_GATE.md (§2 the three provenance
+#         discriminators, §3 banked reference numbers on BOTH denominators,
+#         §4 gate table S1-S10).
+# Stimuli: n_p000.iq and n_p10.iq, nsamp 21,114,096, rstcs_end 8400, cadence 2, vphase 0.
+#
+# n_p10 IS THE LEG THE VARIANT IS FOR.  R4D alone lost 70.28 % of frames there (D2);
+# R4D+R1 recovers it.  Both denominators are pre-registered in §3: D1 is score_t7.py's
+# seq-keyed LOSS with T7_NAIR=428, D2 = (424 - t7_ok)/424 over the 424 air frames fed,
+# which carries a one-frame acquisition floor (b_p000 scores 423/424 = 0.24 % on D2).
+#
+# LEGS NOT RUN HERE, with the banked number:
+#   S6  r4dr1_p10 falsifier: 0 losses within +/-1 of an extra (t11_align.py, ep kind 5)
+#   S7  r4dr1_m10 (n_m10.iq)  LOSS <= 0.48 % D1 / 0.47 % D2; 7-extra 31->24 ratchet
+#   S8  r4dr1_tm10 (s_m10.iq) tiled control, 0.00 % (score_sro2.py, golden tb_p000)
+#   S10 m40 / m10c / lol diagnostics -- explicitly non-gating in the ledger (§4)
+#   S1b r4dr1_p000 vs r4d_p000 byte-identity: DIAGNOSTIC, both outcomes admissible
+#       (§4.2) -- deliberately NOT a pass/fail row, and not one here either.
+#
+# format: name|command|criterion
+#
+# NB the command is run as `timeout 7200 <command>`, and timeout EXECs its first argument
+# as a program -- a leading VAR=value assignment is a shell construct, not a program, and
+# yields rc 127.  Environment for a leg therefore has to go through `env`.
+#
+# S9 discriminators 1 and 2 are asserted inside the build script: the verilate log must
+# name s1_rtl_rxfix_R4DR1/ and not s1_rtl_rxfix_R4D/ (the trailing slash is
+# load-bearing, R4D being a strict prefix of R4DR1); Preamble_Detector.v must carry
+# RXFIX_R1 and must NOT still carry `assign Delay10_out1 = Delay10_reg[49331];`; and
+# the binary's md5 must differ from the R4D binary's.
+build|$RTL/build_sro_rxfix4dr1.sh|grep -q '^BUILD_SRO_RXFIX4DR1_DONE ' build.log
+r4dr1_p000|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 r4dr1_p000 2 0 +r4dwin=r4dr1_p000_skipwin.txt|test -s r4dr1_p000_seq.txt
+r4dr1_p10|$RTL/obj_byte_sro_rxfix4dr1/Vwrap_byte_sro rx $SRO/n_p10.iq 21086704 8400 r4dr1_p10 2 0 +r4dwin=r4dr1_p10_skipwin.txt|test -s r4dr1_p10_seq.txt
+# S1: n_p000 -- 0.00 % on D1, 423/424 on D2 (no loss beyond the acquisition floor),
+# extras 0, skips 8.
+S1_p000_D1|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_p000|grep -q 'LOSS=0.00%' S1_p000_D1.log
+S1_p000_D2|-|k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' r4dr1_p000_res.txt) && [ "$k" = 423 ] && grep -q 'r3_extras=0$' r4dr1_p000_res.txt && grep -q '^r3_skips=8 ' r4dr1_p000_res.txt
+# S2: n_p10 LOSS <= 1 % on BOTH denominators (R4D was 70.28 % on D2 here).
+S2_p10_D1|env T7_NAIR=428 python3 $SCORE/score_t7.py r4dr1_p10|grep -qE 'LOSS=(0\.[0-9][0-9]|1\.00)%' S2_p10_D1.log
+S2_p10_D2|-|k=$(sed -n 's/.*t7_ok=\([0-9]*\).*/\1/p' r4dr1_p10_res.txt) && [ "$k" -ge 420 ]
+# S3: rh_push_on_full = 0 after lock (baseline 21, R4B 28, R4D 0).
+S3_p10_pof|-|grep -q 'rh_push_on_full=0 ' r4dr1_p10_res.txt
+# S4: the PD FIFO pin.  pdPof = 0 is tautological under R1 (§4); the NON-circular
+# witness is pdOcc pinned at 12333 -- per-frame min = max = 12333 after fill, and
+# pdOcc_end = 12333 (R4D read 12332 on this leg).  Column 29 of _frames.txt is
+# pdOccMin, column 30 pdOccMax (sim_sro.cpp T0a appended columns 21..30).
+S4_p10_pdocc|-|grep -q 'pdOcc_end=24634' r4dr1_p10_res.txt && awk -F, 'NR>25 && ($29!=24634 || $30!=24634){n++} END{exit n>0}' r4dr1_p10_frames.txt
+# S5: ring parked at 22/23 and r4d_extras ~ 37 (banked 37, one per 8.1 frames).
+S5_p10_ring|-|e=$(sed -n 's/.*r3_extras=\([0-9]*\).*/\1/p' r4dr1_p10_res.txt) && o=$(sed -n 's/.*occTrue_end=\([0-9]*\).*/\1/p' r4dr1_p10_res.txt) && [ "$e" -ge 30 ] && [ "$e" -le 45 ] && [ "$o" -ge 21 ] && [ "$o" -le 25 ]

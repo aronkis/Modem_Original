@@ -1,0 +1,26 @@
+# carrier_lock.legs -- the receiver must not LATCH (CARRIER_LOCK_LATCH_2026-09-29.md).
+#
+# Tree under test: $RTL/s1_rtl_model (the f3072 model-generated tree, make_sro_trees.sh
+# --from-regen). Stimulus: the f3072 bank -- run with
+#   SRO_SIM_DIR=/mnt/onetb/scratch/qpsk-build-trees/sro_sim_f3072 modem/gates/run_gates.sh --legs modem/gates/carrier_lock.legs
+# The identity reference lives OUTSIDE the banks: modem/gates/bank*.sha256 hash the sro_sim*/ LISTINGS,
+# so an extra file there fails every gate run with GATES_BANK_MISMATCH (2026-09-30, first sp3clamp004 run).
+# Override with CL_BANK=<dir>.
+#
+# WHAT IS PINNED. The shipped tree (IntegClamp 0.06) fails cl_cfoP40k (0/112 syncs), cl_gap1 and
+# cl_gap25 (never re-locks: the symbol-timing integrator pinned on its rail, strobes at 88 % of
+# symbol rate). The fix (IntegClamp 0.004, timing_hardening_overlay.m) passes every row with the
+# clean-stimulus decode bit-identical to the shipped tree (cl_identity). Criteria (perturb_score.py
+# --gate): frame syncs >= 99 % outside the perturbation window (from frame 8) and re-lock <= 5
+# frames after a window; a run that never re-locks is LATCHED and fails.
+#
+# frame = 49268 samples; 120 frames for the offset rows, 200 for the gap rows (gap at frame 100).
+cl_build|env TREE=s1_rtl_model OBJ=obj_carrier_lock_model $RTL/build_carrier_lock.sh|grep -q '^BUILD_CARRIER_LOCK_DONE ' cl_build.log
+cl_baseline|env PERT_LOOP=1 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5912160 8400 cl_baseline 2 0|test -s cl_baseline_pert.txt
+cl_cfoP40k|env PERT_LOOP=1 PERT_CFO_HZ=40000 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5912160 8400 cl_cfoP40k 2 0|test -s cl_cfoP40k_pert.txt
+cl_cfoM38k|env PERT_LOOP=1 PERT_CFO_HZ=-38000 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5912160 8400 cl_cfoM38k 2 0|test -s cl_cfoM38k_pert.txt
+cl_cfoM200k|env PERT_LOOP=1 PERT_CFO_HZ=-200000 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 5912160 8400 cl_cfoM200k 2 0|test -s cl_cfoM200k_pert.txt
+cl_gap1|env PERT_LOOP=1 PERT_DROP_FRAME=100 PERT_DROP_N=1 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 9853600 8400 cl_gap1 2 0|test -s cl_gap1_pert.txt
+cl_gap25|env PERT_LOOP=1 PERT_DROP_FRAME=100 PERT_DROP_N=25 $RTL/obj_carrier_lock_model/Vwrap_byte_sro_model rx $SRO/n_p000.iq 9853600 8400 cl_gap25 2 0|test -s cl_gap25_pert.txt
+cl_identity|-|: depends cl_baseline && cmp -s <(grep -v '^#' cl_baseline_pert.txt | cut -d, -f1-10) ${CL_BANK:-/mnt/onetb/scratch/qpsk-build-trees/carrier_lock_bank}/carrier_lock_c060_baseline_cols1_10.txt
+cl_nolatch|python3 $RTL/perturb_score.py --gate cl_baseline_pert.txt cl_cfoP40k_pert.txt cl_cfoM38k_pert.txt cl_cfoM200k_pert.txt cl_gap1_pert.txt cl_gap25_pert.txt|grep -c '^PASS ' cl_nolatch.log | grep -qx 6 && ! grep -q '^FAIL ' cl_nolatch.log

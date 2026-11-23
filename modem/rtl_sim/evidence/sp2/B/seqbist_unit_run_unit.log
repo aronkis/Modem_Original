@@ -1,0 +1,6 @@
+== GATE seqbist_unit/run_unit.sh  key=seqbist_unit_run_unit  role=B  ts=1789074539
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/seqbist_unit_run_unit.legs
+== work /mnt/onetb/scratch/sp2_gates/work/seqbist_unit_run_unit   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE unit (from 2026-09-10T12:59:58-04:00)
+GATE_LEGS seqbist_unit/run_unit.sh pass=1 fail=0 wall=00:00:00
+GATE_PASS seqbist_unit/run_unit.sh wall=00:00:00

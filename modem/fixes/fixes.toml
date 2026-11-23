@@ -1,0 +1,105 @@
+[meta]
+schema = 1
+base_tree = "jupiter_byte_ddrcap2_build"
+base_manifest_sha256 = "19bb053e9f26bfd9d74e070abbedc715f0fb761e2c7c4472cec5f2feacf6772b"
+vivado_host = "hdl-dev-2"
+vivado_path = "/opt/Xilinx/2025.1/Vivado/bin"
+timing_clock = "axi_adrv9001_adc_1_clk"
+
+[chain]                       # applied in this order, before any rxfix variant
+txfix = { script = "txfix_kit.sh", variant = "F3", injector = "txfix_inject.py" }
+seqbist = { script = "seqbist_kit.sh", lineage = "148", with_crc = 1, rtl = ["modem/rtl_sim/qpsk_traffic_gen_v2.v", "modem/rtl_sim/rx_seq_checker.v", "modem/rtl_sim/cnt_mux32.v"] }
+rxfix = { script = "rxfix_kit.sh", lineage = "148", injector = "rxfix_inject.py" }
+
+[roles.A]
+board = "148"
+variants = ["W1", "R4B", "BS", "PAD"]
+kit_suffix = "pad"
+reference_image = "images/BOOT.BIN.148.rxfixpad.bf2a7305bbe0"
+reference_md5 = "bf2a7305bbe0e0e38b3529d09edddaef"
+reference_injector_commit = "f75d52236b5c0c1d9d12c169cbf26d099ca23d04"
+reference_modem_wns_ns = 0.105
+sro_sign = "negative"        # receiver oscillator faster: EMPTY-edge steering
+
+[roles.B]
+board = "146"
+variants = ["W1", "R4D", "R1"]
+kit_suffix = "r4dr1"
+reference_image = "images/BOOT.BIN.146.rxfixr4dr1.9acbe2ebe1db"
+reference_md5 = "9acbe2ebe1dbf280e030952fc4fc23d8"
+reference_injector_commit = "10b27b737847123b7dc120ff408f0e63541496c3"
+reference_modem_wns_ns = 0.620
+sro_sign = "positive"
+
+[fixes.W1]
+order = 10
+files = ["Validate_Input_Push_Pop_block", "FIFO_block", "Rate_Handle", "Symbol_Synchronizer", "Frequency_and_Time_Synchronizer", "QPSK_Rx", "Receiver", "TxRxComposite", "TxRxCompo_ip", "TxRxCompo_ip_dut", "TxRxCompo_ip_axi_lite", "TxRxCompo_ip_addr_decoder"]
+control = [{ reg = 0x208, bit = 4, name = "w1_freeze", kind = "level" }]
+# witness_section/flags (Task 7): section macro (W|S) + MS_F_* flag names ms_regmap.c
+# uses for each row -- carried here so gen_regmap.py can reproduce ms_regmap.c's
+# hand-written rows exactly. Witness names are the lower-case ms_regmap.c names.
+# `desc`, where given, is the exact row description text (wins over `fields`);
+# `fields` otherwise doubles as the description and stays the bit-layout note.
+witness_section = "W"
+witness = [
+  { addr = 0x214, name = "w1_wita", flags = ["MS_F_PACKED"], fields = "[15:10] occTrue [9:5] pushPtr [4:0] popPtr", desc = "{occ[15:10] pushPtr[9:5] popPtr[4:0]}" },
+  { addr = 0x218, name = "w1_witb", flags = ["MS_F_PACKED"], fields = "[31:16] push_on_full [15:0] pop_on_empty", desc = "{push_on_full[31:16] pop_on_empty[15:0]}" },
+  { addr = 0x21C, name = "w1_ss", flags = ["MS_F_WRAP32"], fields = "census (a) symbol-sync strobes" },
+  { addr = 0x220, name = "w1_rh", flags = ["MS_F_WRAP32"], fields = "census (b) Rate_Handle validOut" },
+  { addr = 0x224, name = "w1_cfc", flags = ["MS_F_WRAP32"], fields = "census (c) CFC validOut" },
+  { addr = 0x228, name = "w1_cs", flags = ["MS_F_WRAP32"], fields = "census (d) carrier-sync validOut" },
+  { addr = 0x22C, name = "w1_pd", flags = ["MS_F_WRAP32"], fields = "census (e) preamble-detector validOut" },
+  { addr = 0x230, name = "w1_pc", flags = ["MS_F_WRAP32"], fields = "census (f) packet-controller validOut" } ]
+gates = ["build_sro_w1.sh"]
+
+[fixes.R4B]
+order = 20
+requires = ["W1"]
+files = ["Rate_Handle", "TxRxCompo_ip_addr_decoder"]
+witness_section = "W"
+witness = [{ addr = 0x234, name = "r4_wit", flags = ["MS_F_PACKED", "MS_F_IMGKEY"], fields = "{locked[31] skips[30:15] opens[14:0]}", desc = "{locked[31] skips[30:15] opens[14:0]} (image-keyed)" }]
+gates = ["build_sro_rxfix4b.sh"]
+
+[fixes.R4D]
+order = 20
+requires = ["W1"]
+conflicts = ["R4B"]
+files = ["Rate_Handle", "TxRxCompo_ip_addr_decoder"]
+witness_section = "W"
+witness = [
+  { addr = 0x234, name = "r4_wit",    flags = ["MS_F_PACKED", "MS_F_IMGKEY"], fields = "{locked[31] skips[30:15] opens[14:0]}", desc = "{locked[31] skips[30:15] opens[14:0]} (image-keyed)" },
+  { addr = 0x238, name = "r4_extras", flags = ["MS_F_PACKED", "MS_F_IMGKEY"], fields = "{16'b0 extras[15:0]}", desc = "R4D/R4E extras (image-keyed)" } ]
+witness_swapped_in_images = ["9acbe2ebe1dbf280e030952fc4fc23d8"]   # silicon exception, W1_REGMAP.md 6-R4D.2
+gates = ["build_sro_rxfix4d.sh", "build_sro_rxfix4dr1.sh"]
+
+[fixes.R1]
+order = 25
+requires = ["W1"]
+files = ["Preamble_Detector"]
+gates = ["build_sro_rxfix4dr1.sh"]
+
+[fixes.BS]
+order = 30
+requires = ["W1"]
+files = ["ByteSerializer", "ByteRxFifo", "TxRxComposite", "TxRxCompo_ip_addr_decoder"]
+control = [{ reg = 0x208, bit = 4, name = "w1_freeze", kind = "level", shared = true }]
+witness_section = "S"
+witness = [
+  { addr = 0x23C, name = "bs_words", flags = ["MS_F_WRAP32"], fields = "ByteSerializer words" },
+  { addr = 0x240, name = "bs_starts", flags = ["MS_F_WRAP32"], fields = "RxAlign start pulses (frame boundaries)" },
+  { addr = 0x244, name = "bs_push", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo pushes" },
+  { addr = 0x248, name = "bs_pop", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo pops" },
+  { addr = 0x24C, name = "bs_drop", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo drop-oldest events" },
+  { addr = 0x250, name = "bs_marks", flags = ["MS_F_PACKED"], fields = "{lasts[31:16] markpush[15:0]} wraps 52.6 s" },
+  { addr = 0x254, name = "bs_evt", flags = ["MS_F_PACKED"], fields = "{trunc_last trunc_min trunc_max dropmax} sat" },
+  { addr = 0x258, name = "bs_cnt", flags = ["MS_F_PACKED"], fields = "{trunc[31:16] q24[15:8]}" } ]
+gates = ["build_sro_bs.sh"]
+
+[fixes.PAD]
+order = 40
+requires = ["BS"]
+files = ["ByteSerializer"]
+gates = ["build_sro_pad.sh"]
+
+[gates]
+common = ["seqbist_unit/run_unit.sh"]

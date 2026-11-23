@@ -1,0 +1,19 @@
+== GATE build_sro_w1.sh  key=build_sro_w1  role=A  ts=1789041892
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_w1.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_w1   SRO=/mnt/onetb/scratch/two_jup_untracked_20260909/comb/sro_sim
+Running as unit: sp2-gate-build_sro_w1-build_w1-1789041892.service; invocation ID: 0037da3b481a4a4c9c572f5e50e23ffb
+LEG_PASS build_w1  00:00:30
+Running as unit: sp2-gate-build_sro_w1-build_base-1789041892.service; invocation ID: 0ea0d11e15b54e7380a2b5fbe4390d6b
+LEG_PASS build_base  00:00:30
+Running as unit: sp2-gate-build_sro_w1-w1_p000-1789041892.service; invocation ID: b7379e7492b84eae84709b63ce9949c5
+LEG_PASS w1_p000  00:14:30
+Running as unit: sp2-gate-build_sro_w1-base_p000-1789041892.service; invocation ID: c6520051d0b542ce9051ddc295e26350
+LEG_PASS base_p000  00:15:00
+Running as unit: sp2-gate-build_sro_w1-w1_m10-1789041892.service; invocation ID: e4f56d972cfa4e7bb48b9c8a1c949a44
+LEG_PASS w1_m10  00:18:31
+Running as unit: sp2-gate-build_sro_w1-base_m10-1789041892.service; invocation ID: 1474ca85e8dd4c21974aa21020e0547f
+LEG_PASS base_m10  00:18:30
+LEG_PASS gateA_p000  00:00:00
+LEG_PASS gateA_m10  00:00:00
+LEG_PASS edge_m10  00:00:00
+GATE_LEGS build_sro_w1.sh pass=9 fail=0 wall=01:07:31

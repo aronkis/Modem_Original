@@ -1,0 +1,1 @@
+MODEM_CLK_WNS clock=axi_adrv9001_adc_1_clk wns=0.785 tns=0.0 failing=0 total=84063

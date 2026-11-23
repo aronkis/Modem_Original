@@ -1,0 +1,114 @@
+[ref."R4B/n_p000"]
+loss_pct = 0.0
+skips = 8
+opens = 2
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4B/n_p2p5"]
+loss_pct = 0.24
+skips = 5
+opens = 31
+pop_on_empty = 0
+push_on_full = 2
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4B/n_m2p5"]
+loss_pct = 0.0
+skips = 32
+opens = 9
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4B/n_p10"]
+loss_pct = 22.75
+skips = 3
+opens = 31
+pop_on_empty = 0
+push_on_full = 79
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4B/n_m10"]
+loss_pct = 0.0
+skips = 110
+opens = 2
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4DR1/n_p000"]
+loss_pct = 0.0
+skips = 8
+extras = 0
+opens = 2
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4DR1/n_p2p5"]
+loss_pct = 0.0
+skips = 5
+extras = 10
+opens = 23
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4DR1/n_m2p5"]
+loss_pct = 0.0
+skips = 32
+extras = 0
+opens = 9
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4DR1/n_p10"]
+loss_pct = 0.0
+skips = 3
+extras = 87
+opens = 23
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"
+
+[ref."R4DR1/n_m10"]
+loss_pct = 0.0
+skips = 110
+extras = 0
+opens = 2
+pop_on_empty = 0
+push_on_full = 0
+pd_push_on_full = 0
+pd_pop_on_empty = 0
+nsamp = 21086704
+tree_sha = "26a59d3bdaa16cbea700e3c41217f197e2f9fcca00905866433774868e1ddf15"

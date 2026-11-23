@@ -1,0 +1,58 @@
+GATE1 run tree_sha=fc9003aa52b919b6 bank=/mnt/onetb/scratch/qpsk-build-trees/sro_sim_f3072 work=/mnt/onetb/scratch/sp2_gates/work_sp4d 2026-09-22T00:41:06-04:00
+LEG_PASS m0_n_p000  01:14:05
+LEG_PASS m0_n_p2p5  01:14:05
+LEG_PASS m0_n_m2p5  01:14:05
+LEG_PASS m0_n_p10  01:14:05
+LEG_PASS m0_n_p000_t7  00:00:00
+LEG_PASS m0_n_p2p5_t7  00:00:00
+LEG_PASS m0_n_m2p5_t7  00:00:00
+LEG_PASS m0_n_p10_t7  00:00:00
+LEG_FAIL G4_prearm  00:00:00  rc=2
+LEG_FAIL G2_skips  00:00:00  rc=1
+LEG_FAIL repro_p000  00:00:00  rc=2
+LEG_FAIL repro_p000_content  00:00:00  rc=1
+LEG_FAIL G3_ring  00:00:00  rc=1
+LEG_FAIL G1_ident  00:00:01  rc=1
+LEG_PASS w1_p000  00:33:32
+LEG_PASS base_p000  00:33:32
+LEG_FAIL gateA_p000  00:00:00  rc=1
+LEG_PASS w1_m10  00:42:33
+LEG_FAIL edge_m10  00:00:00  rc=1
+LEG_PASS base_m10  00:42:33
+LEG_FAIL gateA_m10  00:00:00  rc=1
+LEG_PASS m0_n_m10  01:25:37
+LEG_PASS m0_n_m10_t7  00:00:30
+LEG_FAIL merge_control  00:00:00  rc=1
+LEG_PASS m_bs_p000  01:24:36
+LEG_PASS census_clean  00:00:00
+LEG_FAIL census_grid  00:00:00  rc=2
+LEG_PASS I5_sub  00:00:00
+LEG_PASS m_pad_p000  01:24:06
+LEG_PASS bs_vs_pad  00:00:00
+LEG_PASS m_pad_k1536  01:23:06
+LEG_FAIL words191_k1536  00:00:00  rc=1
+LEG_FAIL control_k1536  00:00:00  rc=1
+LEG_FAIL nrxw_k1536  00:00:00  rc=1
+LEG_PASS m20_n_p000  01:22:36
+LEG_PASS m20_n_p000_t7  00:00:30
+LEG_PASS m20_n_p2p5  01:22:06
+LEG_PASS m20_n_p2p5_t7  00:00:30
+LEG_PASS S1_p000_D1  00:00:00
+LEG_FAIL S1_p000_D2  00:00:00  rc=1
+LEG_PASS sign_identity_p000  00:00:00
+LEG_PASS m20_n_m2p5  01:21:36
+LEG_PASS m20_n_m2p5_t7  00:00:00
+LEG_PASS m20_n_p10  01:17:06
+LEG_PASS m20_n_p10_t7  00:00:00
+LEG_PASS S2_p10_D1  00:00:00
+LEG_PASS S2_p10_D2  00:00:00
+LEG_PASS S3_p10_pof  00:00:00
+LEG_PASS S4_p10_pdocc  00:00:00
+LEG_FAIL S5_p10_ring  00:00:00  rc=1
+LEG_PASS m20_n_m10  01:16:05
+LEG_PASS m20_n_m10_t7  00:00:30
+LEG_FAIL score  00:00:30  rc=1
+GATE_LEGS model_matrix pass=36 fail=17 wall=05:20:23
+GATE_FAIL model_matrix (see /mnt/onetb/scratch/qpsk-jupiter-modem/modem/rtl_sim/evidence/sp4/legs/model_matrix.log)
+GATES_DONE role=legs pass=0 fail=1
+GATE1_RUN_DONE rc=1 2026-09-22T06:01:29-04:00

@@ -1,0 +1,15 @@
+== GATE build_sro_rxfix4b.sh  key=build_sro_rxfix4b  role=A  ts=1789041892
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/fixes/gates/build_sro_rxfix4b.legs
+== work /mnt/onetb/scratch/sp2_gates/work/build_sro_rxfix4b   SRO=/mnt/onetb/scratch/two_jup_untracked_20260909/comb/sro_sim
+Running as unit: sp2-gate-build_sro_rxfix4b-build-1789041892.service; invocation ID: 6afa4ff3cb774c188c17a6b455d4f83e
+LEG_PASS build  00:00:30
+Running as unit: sp2-gate-build_sro_rxfix4b-r4b_p000-1789041892.service; invocation ID: ffb272007c6b43fcaaf7ffcb05d81aa9
+LEG_PASS r4b_p000  00:37:01
+LEG_PASS repro_p000  00:00:00
+Running as unit: sp2-gate-build_sro_rxfix4b-G1_ident-1789041892.service; invocation ID: c5c8fc87fc1349bf989eeac1eebf8140
+LEG_PASS G1_ident  00:00:30
+Running as unit: sp2-gate-build_sro_rxfix4b-G4_prearm-1789041892.service; invocation ID: d23c6e8e2490470ba6f79df13b384c94
+LEG_PASS G4_prearm  00:00:30
+LEG_PASS G2_skips  00:00:00
+LEG_PASS G3_ring  00:00:00
+GATE_LEGS build_sro_rxfix4b.sh pass=7 fail=0 wall=00:38:31

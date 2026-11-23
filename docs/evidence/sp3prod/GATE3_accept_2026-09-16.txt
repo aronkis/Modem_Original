@@ -1,0 +1,44 @@
+== fwd180_1
+  fwd180_1: live 185s/188s  PER=0.006% (13/211054)  CP95UL=0.011%  lag33=-0.000  bins={'1': 6, '2': 2, '3-4': 1, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.006% (13/211054)  CP95UL=0.011%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== fwd180_2
+  fwd180_2: live 188s/188s  PER=0.007% (16/214937)  CP95UL=0.012%  lag33=-0.000  bins={'1': 10, '2': 3, '3-4': 0, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.007% (16/214937)  CP95UL=0.012%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== fwd180_3
+  fwd180_3: live 188s/188s  PER=0.009% (19/214935)  CP95UL=0.014%  lag33=-0.000  bins={'1': 7, '2': 3, '3-4': 2, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.009% (19/214935)  CP95UL=0.014%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== fwd600
+  fwd600: live 605s/610s [WEDGE truncated]  PER=0.009% (64/734808)  CP95UL=0.011%  lag33=-0.000  bins={'1': 33, '2': 8, '3-4': 5, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.009% (64/734808)  CP95UL=0.011%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_1
+  rev180_1: live 189s/189s  PER=0.004% (8/216705)  CP95UL=0.007%  lag33=-0.000  bins={'1': 4, '2': 2, '3-4': 0, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.004% (8/216705)  CP95UL=0.007%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_2
+  rev180_2: live 195s/194s  PER=0.002% (5/223508)  CP95UL=0.005%  lag33=nan  bins={'1': 3, '2': 1, '3-4': 0, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.002% (5/223508)  CP95UL=0.005%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_3
+  rev180_3: live 194s/194s  PER=0.004% (10/222934)  CP95UL=0.008%  lag33=-0.000  bins={'1': 4, '2': 3, '3-4': 0, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.004% (10/222934)  CP95UL=0.008%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_4
+  rev180_4: live 194s/194s  PER=0.012% (26/222934)  CP95UL=0.017%  lag33=-0.000  bins={'1': 6, '2': 3, '3-4': 4, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.012% (26/222934)  CP95UL=0.017%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_5
+  rev180_5: live 195s/194s  PER=0.006% (14/223387)  CP95UL=0.011%  lag33=-0.000  bins={'1': 4, '2': 0, '3-4': 3, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.006% (14/223387)  CP95UL=0.011%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev180_6
+  rev180_6: live 194s/194s  PER=0.005% (11/222932)  CP95UL=0.009%  lag33=nan  bins={'1': 3, '2': 4, '3-4': 0, '5-20': 0, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.005% (11/222932)  CP95UL=0.009%
+  GATE (<1% at CP95 upper limit, live-link): PASS
+== rev600
+  rev600: live 616s/616s  PER=0.008% (59/747971)  CP95UL=0.010%  lag33=-0.000  bins={'1': 9, '2': 0, '3-4': 14, '5-20': 1, '21-100': 0, '>100': 0}
+  POOLED live-window: PER=0.008% (59/747971)  CP95UL=0.010%
+  GATE (<1% at CP95 upper limit, live-link): PASS

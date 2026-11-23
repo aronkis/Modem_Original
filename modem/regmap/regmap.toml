@@ -1,0 +1,62 @@
+# regmap.toml -- the register manifest consumed by gen_regmap.py to produce
+# host/qpsk_fixregs.h and host/modem_status/ms_regmap_fixes.inc.
+#
+# This is NOT the fix-chain manifest (that is modem/fixes/fixes.toml, driven
+# by modem/fixes/apply_fixes.py until Task 15) -- it carries only the
+# [fixes.*] control/witness declarations that describe the 0x208 fixctl
+# control register and the 0x214-0x25C witness window, with no [meta]/
+# [chain]/[roles] chain-execution schema.
+#
+# `desc`, where given, is the exact row-description text to emit in the
+# generated table (it wins over `fields`, which stays the bit-layout
+# documentation carried for the header comment); `fields` otherwise doubles
+# as the description and stays the bit-layout note. Witness names are the
+# lower-case ms_regmap.c names. `witness_section` is the section macro
+# (W|S) ms_regmap.c uses for each row.
+
+[fixes.W1]
+control = [{ reg = 0x208, bit = 4, name = "w1_freeze", kind = "level" }]
+witness_section = "W"
+witness = [
+  { addr = 0x214, name = "w1_wita", flags = ["MS_F_PACKED"], fields = "[15:10] occTrue [9:5] pushPtr [4:0] popPtr", desc = "{occ[15:10] pushPtr[9:5] popPtr[4:0]}" },
+  { addr = 0x218, name = "w1_witb", flags = ["MS_F_PACKED"], fields = "[31:16] push_on_full [15:0] pop_on_empty", desc = "{push_on_full[31:16] pop_on_empty[15:0]}" },
+  { addr = 0x21C, name = "w1_ss", flags = ["MS_F_WRAP32"], fields = "census (a) symbol-sync strobes" },
+  { addr = 0x220, name = "w1_rh", flags = ["MS_F_WRAP32"], fields = "census (b) Rate_Handle validOut" },
+  { addr = 0x224, name = "w1_cfc", flags = ["MS_F_WRAP32"], fields = "census (c) CFC validOut" },
+  { addr = 0x228, name = "w1_cs", flags = ["MS_F_WRAP32"], fields = "census (d) carrier-sync validOut" },
+  { addr = 0x22C, name = "w1_pd", flags = ["MS_F_WRAP32"], fields = "census (e) preamble-detector validOut" },
+  { addr = 0x230, name = "w1_pc", flags = ["MS_F_WRAP32"], fields = "census (f) packet-controller validOut" } ]
+
+[fixes.STEER]
+# R4B (board 148, EMPTY-edge steering only) and R4D (board 146, both edges)
+# merged into one manifest entry: both witness words are canonical for
+# either board, and sro_sign (0x208 bit 5) selects which edge(s) are active.
+witness_section = "W"
+control = [{ reg = 0x208, bit = 5, name = "sro_sign", kind = "level", desc = "0 = EMPTY-edge steering only (skip); 1 = also FULL-edge extra pop" }]
+witness = [
+  { addr = 0x234, name = "r4_wit",    flags = ["MS_F_PACKED", "MS_F_IMGKEY"], fields = "{locked[31] skips[30:15] opens[14:0]}" },
+  { addr = 0x238, name = "r4_extras", flags = ["MS_F_PACKED", "MS_F_IMGKEY"], fields = "{16'b0 extras[15:0]}" },
+  { addr = 0x25C, name = "sro_mode",  flags = ["MS_F_PACKED"],                fields = "{30'b0 extra_armed[1] sro_sign[0]}" } ]
+witness_swapped_in_images = ["9acbe2ebe1dbf280e030952fc4fc23d8"]   # silicon exception, W1_REGMAP.md 6-R4D.2
+
+[fixes.BS]
+control = [{ reg = 0x208, bit = 4, name = "w1_freeze", kind = "level", shared = true }]
+witness_section = "S"
+witness = [
+  { addr = 0x23C, name = "bs_words", flags = ["MS_F_WRAP32"], fields = "ByteSerializer words" },
+  { addr = 0x240, name = "bs_starts", flags = ["MS_F_WRAP32"], fields = "RxAlign start pulses (frame boundaries)" },
+  { addr = 0x244, name = "bs_push", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo pushes" },
+  { addr = 0x248, name = "bs_pop", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo pops" },
+  { addr = 0x24C, name = "bs_drop", flags = ["MS_F_WRAP32"], fields = "ByteRxFifo drop-oldest events" },
+  { addr = 0x250, name = "bs_marks", flags = ["MS_F_PACKED"], fields = "{lasts[31:16] markpush[15:0]} wraps 52.6 s" },
+  { addr = 0x254, name = "bs_evt", flags = ["MS_F_PACKED"], fields = "{trunc_last trunc_min trunc_max dropmax} sat; 8/8/8/8 bits at f1536, 9/9/9/5 at f3072 (WPP 382)" },
+  { addr = 0x258, name = "bs_cnt", flags = ["MS_F_PACKED"], fields = "{trunc[31:16] q24[15:8]}" } ]
+
+[fixes.TILTEQ]
+# Receiver in-band tilt corrector (spec docs/superpowers/specs/2026-10-03-rx-tilt-equaliser-design.md):
+# two AXI4-Lite WRITE words, readable back, cleared by the 0x000 soft reset like 0x208 and re-applied by
+# bring-up (ops/tilt_eq.sh). a_k are sfix16_En15 (|a| <= 0.95 enforced in the fabric decode); 0 = bypass.
+witness_section = "W"
+witness = [
+  { addr = 0x260, name = "tilt_eq_a12",  flags = ["MS_F_PACKED"], fields = "{a2[31:16] a1[15:0]} sfix16_En15 each" },
+  { addr = 0x264, name = "tilt_eq_a3en", flags = ["MS_F_PACKED"], fields = "{en[31] 15'b0 a3[15:0]}" } ]

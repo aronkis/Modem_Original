@@ -1,0 +1,81 @@
+== GATE model_matrix  key=model_matrix  role=legs  ts=1789308035
+== legs /mnt/onetb/scratch/qpsk-jupiter-modem/modem/gates/model_matrix.legs
+== work /mnt/onetb/scratch/sp2_gates/work/model_matrix   SRO=/mnt/onetb/scratch/qpsk-build-trees/sro_sim
+LEG_REUSE m0_n_p2p5 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_p2p5_t7 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_m2p5 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_m2p5_t7 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_p10 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_p10_t7 (from 2026-09-12T02:55:23-04:00)
+LEG_REUSE m0_n_m10 (from 2026-09-13T08:29:29-04:00)
+LEG_REUSE m0_n_m10_t7 (from 2026-09-13T08:29:59-04:00)
+LEG_REUSE G2_skips (from 2026-09-12T02:56:54-04:00)
+LEG_REUSE G3_ring (from 2026-09-12T02:56:54-04:00)
+LEG_REUSE w1_p000 (from 2026-09-13T08:05:27-04:00)
+LEG_REUSE base_p000 (from 2026-09-13T08:04:57-04:00)
+LEG_REUSE w1_m10 (from 2026-09-13T08:10:57-04:00)
+LEG_REUSE base_m10 (from 2026-09-13T08:24:28-04:00)
+LEG_REUSE m_bs_p000 (from 2026-09-13T08:46:30-04:00)
+LEG_REUSE m_pad_p000 (from 2026-09-13T08:52:31-04:00)
+LEG_REUSE m_pad_k1536 (from 2026-09-13T09:07:02-04:00)
+LEG_REUSE census_clean (from 2026-09-13T08:46:30-04:00)
+LEG_REUSE census_grid (from 2026-09-13T08:46:30-04:00)
+LEG_REUSE words191_k1536 (from 2026-09-13T09:07:02-04:00)
+LEG_REUSE control_k1536 (from 2026-09-13T09:07:02-04:00)
+LEG_REUSE nrxw_k1536 (from 2026-09-13T09:07:02-04:00)
+LEG_REUSE merge_control (from 2026-09-13T08:29:59-04:00)
+LEG_REUSE bs_vs_pad (from 2026-09-13T08:52:31-04:00)
+LEG_REUSE m20_n_p000 (from 2026-09-13T09:12:33-04:00)
+LEG_REUSE m20_n_p000_t7 (from 2026-09-13T09:13:03-04:00)
+LEG_REUSE m20_n_p2p5 (from 2026-09-13T09:29:04-04:00)
+LEG_REUSE m20_n_p2p5_t7 (from 2026-09-13T09:29:34-04:00)
+LEG_REUSE m20_n_m2p5 (from 2026-09-13T09:34:35-04:00)
+LEG_REUSE m20_n_m2p5_t7 (from 2026-09-13T09:34:35-04:00)
+LEG_REUSE m20_n_p10 (from 2026-09-13T09:49:36-04:00)
+LEG_REUSE m20_n_p10_t7 (from 2026-09-13T09:49:37-04:00)
+LEG_REUSE m20_n_m10 (from 2026-09-13T09:54:37-04:00)
+LEG_REUSE m20_n_m10_t7 (from 2026-09-13T09:55:07-04:00)
+LEG_REUSE S1_p000_D1 (from 2026-09-13T09:29:34-04:00)
+LEG_REUSE S1_p000_D2 (from 2026-09-13T09:29:34-04:00)
+LEG_REUSE S2_p10_D1 (from 2026-09-13T09:49:37-04:00)
+LEG_REUSE S2_p10_D2 (from 2026-09-13T09:49:37-04:00)
+LEG_REUSE S3_p10_pof (from 2026-09-13T09:49:37-04:00)
+LEG_REUSE S4_p10_pdocc (from 2026-09-13T09:49:37-04:00)
+LEG_REUSE S5_p10_ring (from 2026-09-13T09:49:37-04:00)
+Running as unit: sp2-gate-model_matrix-m0_n_p000-1789308035.service; invocation ID: 2c50f8a3937943b2b776cec6bfa55375
+LEG_FAIL gateA_p000  00:00:00  rc=1
+---- tail /mnt/onetb/scratch/sp2_gates/work/model_matrix/gateA_p000.log ----
+LEG_FAIL gateA_m10  00:00:00  rc=1
+---- tail /mnt/onetb/scratch/sp2_gates/work/model_matrix/gateA_m10.log ----
+LEG_FAIL edge_m10  00:00:00  rc=1
+---- tail /mnt/onetb/scratch/sp2_gates/work/model_matrix/edge_m10.log ----
+LEG_PASS m0_n_p000  00:36:02
+Running as unit: sp2-gate-model_matrix-m0_n_p000_t7-1789308035.service; invocation ID: 34f3273c284f4f02ac6a1b0d1121402a
+LEG_PASS m0_n_p000_t7  00:00:31
+Running as unit: sp2-gate-model_matrix-G1_ident-1789308035.service; invocation ID: 95cd9e55194b4da696ae86527baef60b
+Running as unit: sp2-gate-model_matrix-G4_prearm-1789308035.service; invocation ID: 5a2d5adcdd6e4ecf95979e76f4fb9218
+LEG_FAIL repro_p000  00:00:00  rc=1
+---- tail /mnt/onetb/scratch/sp2_gates/work/model_matrix/repro_p000.log ----
+LEG_PASS repro_p000_content  00:00:00
+LEG_PASS I5_sub  00:00:00
+LEG_PASS sign_identity_p000  00:00:00
+Running as unit: sp2-gate-model_matrix-score-1789308035.service; invocation ID: 455f313dfbd244de81dfe0e459536eee
+LEG_PASS G1_ident  00:00:00
+LEG_FAIL G4_prearm  00:00:00  rc=1
+---- tail /mnt/onetb/scratch/sp2_gates/work/model_matrix/G4_prearm.log ----
+
+=== m0_n_p000 vs /mnt/onetb/scratch/qpsk-build-trees/sro_sim/b_p000 : PRE-ARM STRUCTURAL IDENTITY ===
+  first skip: air frame 13
+  common seq delivered before the first skip: 6
+    identical content (nwords,hash,user): 6/6
+    identical INCLUDING sidx            : 0/6
+  *** 6 pre-arm frame(s) differ -- the steering cannot have acted yet, so this is a real failure.  First few:
+      seq 2: new=(345358, 191, '9d21f9f6', 1)  base=(345357, 191, '9d21f9f6', 1)
+      seq 3: new=(394690, 191, '0eb1ffef', 1)  base=(394689, 191, '0eb1ffef', 1)
+      seq 4: new=(444022, 191, '8b627c17', 1)  base=(444021, 191, '8b627c17', 1)
+      seq 5: new=(493354, 191, '57002c3e', 1)  base=(493353, 191, '57002c3e', 1)
+      seq 6: new=(542686, 191, 'b73ac5f2', 1)  base=(542685, 191, 'b73ac5f2', 1)
+      seq 7: new=(592018, 191, 'aead3ae7', 1)  base=(592017, 191, 'aead3ae7', 1)
+LEG_PASS score  00:00:30
+GATE_LEGS model_matrix pass=48 fail=5 wall=00:37:03
+GATE_FAIL model_matrix (see /mnt/onetb/scratch/qpsk-jupiter-modem/modem/rtl_sim/evidence/sp2/legs/model_matrix.log)

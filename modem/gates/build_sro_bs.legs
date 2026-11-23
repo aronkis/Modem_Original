@@ -1,0 +1,87 @@
+# build_sro_bs.legs -- RXFIX_BS (byte-seam census) sim gate.
+# Ledger: docs/evidence/comb/RXFIX_BS1_SIM_GATE.md (§1 the three binaries and why
+#         there are three, §2 the legs, §3 identity predictions I1-I6, §8 scoring,
+#         §9 results).
+# Stimulus: n_p000.iq, nsamp 21,114,096, rstcs_end 8400, cadence 2, vphase 0 (§2:
+#           "Stimulus, sample counts and rstcs_end are task 7's, unchanged").
+#
+# WHAT VERDICT THIS TABLE ENCODES, AND WHAT IT DELIBERATELY DOES NOT.  The ledger's
+# own verdict is "BS_GATE 65/72 PASS": seven rows FAILED and are named one by one in
+# §9.2, and the gate was still declared PASS on that basis.  72/72 was therefore never
+# the gate, and this table does not pretend otherwise.  What it keeps is §3's identity
+# block I1-I6 -- "the instrument must change nothing" -- because that is the property
+# a PROMOTION gate has to re-establish on regenerated trees: a read-only census that
+# perturbs the data path would refute the cut (§3: "A failure of I1-I4 refutes the
+# cut").  The seven §9.2 FAILs are pre-existing, are recorded in the ledger with their
+# measured numbers, and are out of scope for a promotion re-run; they are NOT scored
+# here and must not be read as having been re-passed.
+#
+# LEGS NOT RUN HERE, with the banked reference:
+#   I2/I3      bs1_m10 vs bsb_m10, bs1_p10 vs bsb_p10 -- byte-identical (§9.1)
+#   §4         the counter recount rows on the final census record
+#   §5         bs_trunc and its three order statistics, bs_q24 (bs1_k1536 / bs1_k1024)
+#   §6         the injected deletion and the bounded stall/release (bs1_dA / bs1_dB)
+#   §U         the bs_seam_census unit gate (build_bs_census_tb.sh, a separate harness)
+#   §9.2       the seven named FAILs
+#
+# format: name|command|criterion
+#
+# I6 + §1: three binaries from three freshly made trees; build_sro_bs.sh rebuilds
+# s1_rtl_bs / s1_rtl_bs_base / s1_rtl_bs_gen itself and asserts, per binary, that the
+# verilate log names wrap_byte_bs.v and NONE of the other six files that declare
+# `module wrap_byte_sro`, that the right tree was read and the other two were not,
+# and that the bs and base binaries' md5s differ.
+build|$RTL/build_sro_bs.sh|grep -q '^BUILD_SRO_BS_DONE' build.log && [ "$(grep -c '^BUILD_SRO_BS_OK ' build.log)" = 3 ] && grep -q '(differ: OK) depth=4096' build.log
+# §2: the three p000 legs.  gen = wrapper transparency, base = identity reference,
+# bs = identity + census.
+bsw_p000|$RTL/obj_byte_sro_bs_gen/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 bsw_p000 2 0|test -s bsw_p000_frames.txt
+bsb_p000|$RTL/obj_byte_sro_bs_base/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 bsb_p000 2 0|test -s bsb_p000_frames.txt
+bs1_p000|$RTL/obj_byte_sro_bs/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 bs1_p000 2 0 +bsdump=bs1_p000_census.txt|test -s bs1_p000_frames.txt
+# I1: bs1_p000_frames.txt == bsb_p000_frames.txt, byte for byte.
+I1_frames|-|cmp -s bs1_p000_frames.txt bsb_p000_frames.txt
+# I4: the same for _res.txt (packets, biterr, capout, nrxw, pushes, pops, anom, rhPE,
+# rhPF, pdPof, pdPE).  Both legs are launched with the same iq argument, so the whole
+# file including its first line must match.
+I4_res|-|cmp -s bs1_p000_res.txt bsb_p000_res.txt
+# I5: the WRAPPER-transparency row, and the only comparison that isolates it -- the
+# gen binary's frames file must be byte-identical to task 7's BANKED b_p000_frames.txt,
+# produced by the SAME driver on the SAME RTL through wrap_byte_sro.v (md5 b2337afe...).
+# A failure of I5 alone says the wrapper is not transparent, not that the patch is wrong.
+I5_wrapper|-|cmp -s bsw_p000_frames.txt $BANK/b_p000_frames.txt
+# Reproduction of the banked Task 46 leg (md5 b2337afe / 8f5f2f4a / 01cc2c53 for
+# _frames / _deliv / _seq, quoted in FWD_CRC_REGRESSION_0907 §47.8).
+repro_p000|-|cmp -s bs1_p000_frames.txt $BANK/bs1_p000_frames.txt && cmp -s bs1_p000_deliv.txt $BANK/bs1_p000_deliv.txt && cmp -s bs1_p000_seq.txt $BANK/bs1_p000_seq.txt
+# §5 (the clean-leg corner of it): on a 0 ppm leg the census must count no truncation,
+# no drop, no short and no orphan, and the harness recount must agree with the census on
+# both word and frame counts.  Columns, from the census header: 2=h_push 3=h_acc
+# 5=ck_frames 9=ck_short 10=ck_orphan 11=bs_words 12=bs_starts 13=bs_push 14=bs_pop
+# 15=bs_drop 22=bs_trunc.
+#
+# THE DUMP INSTANT IS NOT PART OF THE GATE, AND THE BANKED FILE'S TAIL CANNOT BE USED.
+# The banked bs1_p000_census.txt (2026-09-06) has records only on the 1 M clk grid and
+# ends at clk 42.00 M with 80,350 words / 421 frames.  The wrapper in the tree today is
+# the later one build_sro_bs.sh:118-121 describes -- "it differs only in the wrapper's
+# dump TRIGGER (a record every BS_PUSH_GRID pushes as well as on the clk grid) --
+# nothing inside the DUT" (BS_PUSH_GRID = 4096, wrap_byte_bs.v:384).  So a re-run emits
+# more records and its LAST one lands off-grid mid-frame (41.70 M, 79,760 / 418), the
+# same end-of-run offset FWD_CRC_REGRESSION_0907 §47.8 footnotes for the pad legs.
+# Pinning the banked tail would therefore gate the dump trigger, not the census.  What
+# is gated instead: (a) the zero-defect and self-consistency invariants on the final
+# record, whenever it falls, and (b) every record whose clk EXISTS IN BOTH files must be
+# byte-identical -- which is the real reproduction claim and is unaffected by the extra
+# records.  _frames/_deliv/_seq identity is already gated byte-for-byte by repro_p000.
+# bs_trunc (col 22) is scored 0..4, not == 0: §5 C8a says "n_p000 has 4 of 428 air frames
+# that are not clean, so a bs_trunc of 1...4 is a benign miss, not a defect" (the banked
+# bs1_p000 measured 0).  Everything else is a hard zero.
+census_clean|-|tail -1 bs1_p000_census.txt | awk -F, '{ exit !($9 == 0 && $10 == 0 && $15 == 0 && $22 >= 0 && $22 <= 4 && $2 == $3 && $2 == $11 && $5 == $12 && $13 == $14 && $5 > 400) }'
+# THE FLOOR, AND WHY IT IS NOT "banked records inside our clk range".  That figure is 42,
+# and it is unreachable by construction: the banked run dumped only on the 1 M clk grid,
+# while this wrapper also dumps every BS_PUSH_GRID pushes, and that extra trigger resets
+# bs_tick -- so after the first few records our clk-grid dumps never land on a round number
+# again.  Measured: 59 records for the banked 43, of which exactly 3 (clk 0, 1 M, 2 M) sit
+# on the banked grid.  The non-circular invariant is therefore the OTHER direction: EVERY
+# on-grid record this run emits must exist in the banked file AND be byte-identical.  That
+# fails if we emit an on-grid record the banked run lacks (n < want) or if any shared record
+# differs (bad > 0).  STEP is read off the banked file rather than hard-coded.  The byte-level
+# reproduction claim is carried by repro_p000, which is a hard row; this one corroborates it.
+census_grid|-|STEP=$(awk -F, '!/^#/{if(p!=""){print $1-p; exit} p=$1}' $BANK/bs1_p000_census.txt) && HI=$(tail -1 $BANK/bs1_p000_census.txt | cut -d, -f1) && want=$(awk -F, -v S="$STEP" -v H="$HI" '!/^#/ && $1%S==0 && $1<=H {n++} END{print n+0}' bs1_p000_census.txt) && [ "$want" -ge 3 ] && awk -F, -v W="$want" 'NR==FNR{a[$1]=$0;next} !/^#/ && ($1 in a){n++; if(a[$1]!=$0) bad++} END{exit !(n == W && bad == 0)}' $BANK/bs1_p000_census.txt bs1_p000_census.txt

@@ -1,0 +1,50 @@
+LEG_PASS build_w1  00:00:30
+LEG_PASS build_base  00:00:30
+LEG_PASS w1_p000  00:14:30
+LEG_PASS base_p000  00:15:00
+LEG_PASS w1_m10  00:18:31
+LEG_PASS base_m10  00:18:30
+LEG_PASS gateA_p000  00:00:00
+LEG_PASS gateA_m10  00:00:00
+LEG_PASS edge_m10  00:00:00
+GATE_LEGS build_sro_w1.sh pass=9 fail=0 wall=01:07:31
+GATE_PASS build_sro_w1.sh wall=01:07:31
+LEG_PASS build  00:00:30
+LEG_PASS r4b_p000  00:37:01
+LEG_PASS repro_p000  00:00:00
+LEG_PASS G1_ident  00:00:30
+LEG_PASS G4_prearm  00:00:30
+LEG_PASS G2_skips  00:00:00
+LEG_PASS G3_ring  00:00:00
+GATE_LEGS build_sro_rxfix4b.sh pass=7 fail=0 wall=00:38:31
+GATE_PASS build_sro_rxfix4b.sh wall=00:38:31
+LEG_PASS build  00:01:00
+LEG_PASS bsw_p000  00:36:31
+LEG_PASS bsb_p000  00:36:30
+LEG_PASS bs1_p000  00:37:01
+LEG_PASS I1_frames  00:00:00
+LEG_PASS I4_res  00:00:00
+LEG_PASS I5_wrapper  00:00:00
+LEG_PASS repro_p000  00:00:00
+LEG_FAIL census_clean  00:00:00  rc=1
+GATE_LEGS build_sro_bs.sh pass=8 fail=1 wall=01:51:02
+GATE_FAIL build_sro_bs.sh (see /mnt/onetb/scratch/qpsk-jupiter-modem/modem/rtl_sim/evidence/sp2/A/build_sro_bs.log)
+LEG_PASS tree  00:00:30
+LEG_PASS build  00:00:30
+LEG_PASS pad_p000  00:38:01
+LEG_PASS pad_k1536  00:38:31
+LEG_PASS ident_p000  00:00:00
+LEG_PASS ident_p000_res  00:00:00
+LEG_PASS repro_pad  00:00:00
+LEG_PASS control_k1536  00:00:00
+LEG_PASS words191_k1536  00:00:00
+LEG_PASS merge_control  00:00:00
+LEG_PASS nrxw_k1536  00:00:00
+GATE_LEGS build_sro_pad.sh pass=11 fail=0 wall=01:17:32
+GATE_PASS build_sro_pad.sh wall=01:17:32
+LEG_PASS unit  00:00:30
+GATE_LEGS seqbist_unit/run_unit.sh pass=1 fail=0 wall=00:00:30
+GATE_PASS seqbist_unit/run_unit.sh wall=00:00:30
+modem/fixes/run_gates.sh: line 128: syntax error near unexpected token `)'
+modem/fixes/run_gates.sh: line 128: `fail+1))'
+RUNGATES_A_RC=2

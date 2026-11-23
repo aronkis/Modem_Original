@@ -1,0 +1,59 @@
+# build_sro_rxfix4b.legs -- RXFIX_R4B sim gate.
+# Ledger: docs/evidence/comb/RXFIX_R4B_SIM_GATE.md (§3 the gate table G1-G17,
+#         §6 amendment: G4 generalised to every paired leg via t12b_prearm.py).
+# Stimulus: n_p000.iq, nsamp 21,114,096 (428 air frames), rstcs_end 8400, cadence 2,
+#           vphase 0 -- the command shape the ledgers record for every SRO leg
+#           (COMB32_SRO_SIM_TAPS.md §"Command": Vwrap_byte_sro rx <stim> <nsamp> 8400
+#           <prefix> 2 0).
+#
+# LEGS NOT RUN HERE, with the banked number, so the omission is explicit:
+#   G5-G8  r4b_m10  (n_m10.iq)   LOSS 0.48 %, skips 30, every skip in [pcEnd+1,+13]
+#   G9-G10 r4b_m40  (n_m40.iq)   LOSS <= 1 %, skips 150..260
+#   G11    r4b_tm10 (s_m10.iq)   LOSS 0.00 %
+#   G12-G13 r4b_m10c / b_m10c    LOSS <= 0.5 % at -10 ppm + 20 kHz CFO
+#   G14    r4b_p10 vs b_p10      the no-regression row loss(R4B) <= loss(base).  NOTE the
+#          banked numbers are 6.65 % (R4B) vs 4.99 % (base) -- that is the FAILING direction
+#          of G14, and the ledger accepts it because §5 states the FULL edge / positive SRO
+#          is untouched by R4B and only observed.  Omitted here, not passed.
+#   G15    r4b_lol               re-lock across a forced 4.05-frame outage
+#   G17    injector kit-shaped W1+R4B application -- covered by modem/fixes/tests
+#          and by the rxfix_kit.sh verify path, not by a Verilator leg.
+# Each is a ~1 h 21.1 M-sample leg; the rows kept below are the STRUCTURAL ones
+# (identity against banked artifacts), which are claims about the RTL text.
+#
+# format: name|command|criterion
+#
+# G16 (wrapper/tree provenance) is asserted inside the build script itself: it greps
+# the verilate log for the other three files that declare `module wrap_byte_sro` and
+# for RXFIX_R4B in the variant tree's Rate_Handle.v.
+build|$RTL/build_sro_rxfix4b.sh|grep -q '^BUILD_SRO_RXFIX4B_DONE ' build.log
+r4b_p000|$RTL/obj_byte_sro_rxfix4b/Vwrap_byte_sro rx $SRO/n_p000.iq 21086704 8400 r4b_p000 2 0 +r4bwin=r4b_p000_skipwin.txt|test -s r4b_p000_deliv.txt && test -s r4b_p000_seq.txt
+# Reproduction of the banked Task 12b leg: _deliv.txt and _frames.txt byte-for-byte.
+# Stronger than any single G row -- if this holds, every banked R4B number is reproduced.
+repro_p000|-|cmp -s r4b_p000_deliv.txt $BANK/r4b_p000_deliv.txt && cmp -s r4b_p000_frames.txt $BANK/r4b_p000_frames.txt
+# G1: delivered content vs b_p000, seq-keyed, content_equal on every common seq, >= 420 common.
+G1_ident|python3 $SCORE/t12_ident.py r4b_p000 $BANK/b_p000|grep -q '^T12_IDENT PASS content_equal=True' G1_ident.log && [ "$(sed -n 's/.*common seq: \([0-9]*\).*/\1/p' G1_ident.log | head -1)" -ge 420 ]
+# G4 (as generalised in §6): every frame delivered before the first skip is identical
+# -- t12b_prearm.py finds the first skip in <pfx>_skipwin.txt, which wrap_byte_sro4b.v
+# only writes under that name if +r4bwin= names it (default r4b_skipwin.txt); without
+# the plusarg the scorer sees no skip, treats the WHOLE leg as pre-arm and fails.
+# to the baseline INCLUDING sidx -- the pop is literally the baseline expression until
+# the first arm, so a single pre-arm mismatch is a real failure.
+G4_prearm|python3 $SCORE/t12b_prearm.py r4b_p000 $BANK/b_p000|grep -q 'PRE-ARM IDENTITY HOLDS' G4_prearm.log
+# G2, BOTH clauses of RXFIX_R4B_SIM_GATE.md:93 -- "4 <= skips <= 14, ALL inside the first
+# 12 air frames after lock, none after".  The count comes from _res.txt; the POSITION clause
+# is scored with the restored t12b_window.py, which reads the lock instant from _ep.txt
+# (kind 5) and the per-skip air frame from _skipwin.txt, and which additionally re-counts
+# every skip on an INDEPENDENT wrapper tap.  r3_extras on an R4B leg is the A5A50002 lock
+# sentinel, not a count (RXFIX_S1_SIM_GATE.md §3) -- the scorer prints it as LOCKED and it
+# is not scored as a number here.
+G2_skips|python3 $SCORE/t12b_window.py r4b_p000|s=$(sed -n 's/.*r3_skips=\([0-9]*\).*/\1/p' r4b_p000_res.txt) && [ "$s" -ge 4 ] && [ "$s" -le 14 ] && grep -q '^  WINDOW OK: every one of ' G2_skips.log && lk=$(sed -n 's/.*(LOCK) at air frame \([0-9]*\).*/\1/p' G2_skips.log) && la=$(sed -n 's/.*air frames  : first [0-9]*, last \([0-9]*\),.*/\1/p' G2_skips.log) && fa=$(sed -n 's/.*air frames  : first \([0-9]*\),.*/\1/p' G2_skips.log) && [ "$fa" -ge "$lk" ] && [ "$((la - lk))" -le 11 ]
+# G3, BOTH clauses of RXFIX_R4B_SIM_GATE.md:94 -- "occupancy plateau oMin/oMax in [8,12],
+# and rh_pop_on_empty = 0 on every air frame after the last skip".  Note the quantity: it is
+# the EMPTY edge (rh_pop_on_empty), not the FULL edge -- R4B steers the EMPTY side and §5
+# says the FULL edge is untouched and only observed (G14), so scoring rh_push_on_full here
+# would have gated the wrong thing.  Per-frame columns of _frames.txt (sim_sro.cpp T0a
+# appended 21..30): 23=occTmin 24=occTmax 25=rhPopEmpty.  The last skip's air frame is
+# derived from _skipwin.txt (sidx / 49332 samples per air frame).  Banked expectation from
+# §0: the ring self-centres at 9/10.
+G3_ring|-|lf=$(awk -F, '!/^#/{f=int($2/49268)} END{print f+0}' r4b_p000_skipwin.txt) && awk -F, -v L="$lf" '$1>L {n++; if($25!=0) bad++; if($23<8||$23>12||$24<8||$24>12) bad++} END{exit !(n>100 && bad==0)}' r4b_p000_frames.txt

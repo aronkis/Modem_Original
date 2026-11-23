@@ -1,0 +1,27 @@
+================================================================
+ PACKET_F3072 -- K=5 doubled frame (2-sps rung, sp4) bit contract
+================================================================
+ trellis        = poly2trellis(5,[35 23])   TB=25  (term, hard)
+ message        = 'ADI Hello World' (120 bits, MSB-first per char)
+ PN pad         = 24456 bits, rng(30720,'twister'), randi([0 1],24456,1)
+ info field     = 24576 usable (384*64) + 4 always-zero pad = 24580
+ info/tail/coded= 24580 / 4 / 49168
+ interleave     = ROWS=3073 COLS=16, read perm = r*COLS+c (legacy)
+ deinterleave   = perm = c*ROWS+r (exact inverse; grid 3073x16=49168,
+                  fully gridded -- no ungridded tail)
+ filler         = 48-bit PN9 (x^9+x^5+1, seed ones; no DC dwell) -> payload 49216 bits = 1538 uint32 words
+ word alignment = 49216 bits = 769 uint64 = 1538 uint32 (exact)
+ air frame      = 26 preamble symbols (Barker-13 x2) + 24608 data symbols = 24634 slots; 2 sps -> 49268 samples
+ ROM packing    = word w = bits[32w..32w+31], MSB-first (bit 32w ->
+                  word bit 31); one-line uint32([...]) literal
+ CAP_OUT pack   = LSB-first 32-bit pack of first 32 decoded info bits
+ CAP_OUT_GOLDEN=0x04922282
+----------------------------------------------------------------
+ DELIVERY CONTRACT (byte-RX, controller option b -- DELIVERY-SIDE ONLY;
+   the payload/coded/interleave/filler/ROM/golden ABOVE are UNCHANGED):
+   WordsPerPacketRx = 382  ->  382 x 64 = 24448 info bits delivered/frame.
+   Bound: RxAlign emits at most InfoBits-TailBits-RxPipelineSkip(41)=24535
+   info bits/frame before the frame boundary resets it; WPP*64=24448 fits
+   with a 87-bit margin (WPP=384 -> 24576 would truncate every frame).
+   Discarded/frame: 128 usable + 4 zero-pad = 132 info bits (0.54%).
+   Host frame 3056 B -> MTU 3044; TX air transfer 6152 B (769 words).

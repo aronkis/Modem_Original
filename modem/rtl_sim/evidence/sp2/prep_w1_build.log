@@ -1,0 +1,10 @@
+BUILD_W1_DONE w1 /mnt/onetb/scratch/qpsk-jupiter-modem/modem/rtl_sim/obj_byte_w1/Vwrap_byte_w1
+
+real	0m11.967s
+user	0m34.355s
+sys	0m1.907s
+BUILD_W1_DONE base /mnt/onetb/scratch/qpsk-jupiter-modem/modem/rtl_sim/obj_byte_w1_base/Vwrap_byte_w1
+
+real	0m11.535s
+user	0m33.885s
+sys	0m1.972s
